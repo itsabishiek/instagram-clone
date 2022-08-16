@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../firebase/clientApp";
+import BottomNavbar from "../navbar/BottomNavbar";
 import Navbar from "../navbar/Navbar";
 
 type LayoutProps = {
@@ -18,6 +19,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <Navbar user={user} />
       )}
       <main>{children}</main>
+      {!(router.pathname === "/login" || router.pathname === "/signup") && (
+        <BottomNavbar user={user} />
+      )}
     </>
   );
 };

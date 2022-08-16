@@ -22,7 +22,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
   const { userStateValue } = useUserData();
   const userData = userStateValue.userData;
 
-  console.log(userData);
+  // console.log(userData);
 
   const logout = async () => {
     await signOut(auth);
@@ -72,7 +72,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
                 strokeWidth="2"
               ></circle>
             </svg>
-            <Text fontSize="10pt" ml={3}>
+            <Text fontSize="10pt" ml={3} color="#262626">
               Profile
             </Text>
           </MenuItem>
@@ -97,7 +97,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
               strokeWidth="2"
             ></polygon>
           </svg>
-          <Text fontSize="10pt" ml={3}>
+          <Text fontSize="10pt" ml={3} color="#262626">
             Saved
           </Text>
         </MenuItem>
@@ -130,7 +130,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
               strokeWidth="2"
             ></path>
           </svg>
-          <Text fontSize="10pt" ml={3}>
+          <Text fontSize="10pt" ml={3} color="#262626">
             Settings
           </Text>
         </MenuItem>
@@ -147,7 +147,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
           >
             <path d="M8 8.363a1 1 0 00-1-1H4.31a8.977 8.977 0 0114.054-1.727 1 1 0 101.414-1.414A11.003 11.003 0 003 5.672V3.363a1 1 0 10-2 0v5a1 1 0 001 1h5a1 1 0 001-1zm14 6.274h-5a1 1 0 000 2h2.69a8.977 8.977 0 01-14.054 1.727 1 1 0 00-1.414 1.414A11.004 11.004 0 0021 18.33v2.307a1 1 0 002 0v-5a1 1 0 00-1-1z"></path>
           </svg>
-          <Text fontSize="10pt" ml={3}>
+          <Text fontSize="10pt" ml={3} color="#262626">
             Switch accounts
           </Text>
         </MenuItem>
@@ -155,7 +155,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ children }) => {
         <Divider />
 
         <MenuItem _hover={{ bg: "none" }} p="8px 16px" onClick={logout}>
-          <Text fontSize="10pt" ml={3}>
+          <Text fontSize="10pt" ml={3} color="#262626">
             Logout
           </Text>
         </MenuItem>

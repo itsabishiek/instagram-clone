@@ -1,14 +1,13 @@
-import { Avatar, Box, Flex } from "@chakra-ui/react";
-import Link from "next/link";
+import { Avatar, Box, Flex, Link } from "@chakra-ui/react";
 import React from "react";
-import UserMenu from "../menus/UserMenu";
+import UserMenu from "../../menus/UserMenu";
 
 type IconsProps = {};
 
 const Icons: React.FC<IconsProps> = () => {
   return (
     <Flex align="center" gap={6}>
-      <Link href="/">
+      <Link href="/" display={{ base: "none", md: "flex" }}>
         <svg
           aria-label="Home"
           color="#262626"
@@ -73,7 +72,7 @@ const Icons: React.FC<IconsProps> = () => {
         </Box>
       </Link>
 
-      <Link href="/">
+      <Link href="/" display={{ base: "none", md: "flex" }}>
         <svg
           aria-label="New post"
           color="#262626"
@@ -117,7 +116,7 @@ const Icons: React.FC<IconsProps> = () => {
         </svg>
       </Link>
 
-      <Link href="/">
+      <Link href="/" display={{ base: "none", md: "flex" }}>
         <svg
           aria-label="Find People"
           color="#262626"
@@ -153,7 +152,7 @@ const Icons: React.FC<IconsProps> = () => {
         </svg>
       </Link>
 
-      <Link href="/">
+      <Link href="/" display={{ base: "none", md: "flex" }}>
         <svg
           aria-label="Activity Feed"
           color="#262626"
@@ -168,11 +167,11 @@ const Icons: React.FC<IconsProps> = () => {
         </svg>
       </Link>
 
-      <Link href="/">
+      <Box display={{ base: "none", md: "flex" }}>
         <UserMenu>
           <Avatar size="xs" />
         </UserMenu>
-      </Link>
+      </Box>
     </Flex>
   );
 };

@@ -1,5 +1,7 @@
+import { Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import PageContent from "../components/layout/PageContent";
 
 const Home: NextPage = () => {
   return (
@@ -13,7 +15,14 @@ const Home: NextPage = () => {
         />
       </Head>
 
-      <div>Homepage</div>
+      <PageContent>
+        <>
+          <Text bg="red">Left Side</Text>
+        </>
+        <>
+          <Text bg="cyan">Right Side</Text>
+        </>
+      </PageContent>
     </div>
   );
 };

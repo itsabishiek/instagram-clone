@@ -2,8 +2,9 @@ import { Button, Flex } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import Link from "next/link";
 import React from "react";
-import Icons from "../Icons";
-import SearchInput from "../SearchInput";
+import Icons from "./Icons";
+import SearchInput from "./SearchInput";
+import { AiOutlineCamera } from "react-icons/ai";
 
 type NavbarProps = {
   user?: User | null;
@@ -24,7 +25,20 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       w="100%"
     >
       <Flex width="935px">
-        <Flex flex={1} justify={{ base: "left", md: "left" }} mt={2}>
+        {user && (
+          <Flex
+            display={{ base: "flex", md: "none" }}
+            align="center"
+            flex={{ base: 1, md: "none" }}
+          >
+            <AiOutlineCamera fontSize="25px" />
+          </Flex>
+        )}
+        <Flex
+          flex={{ base: 2.3, md: 1 }}
+          justify={{ base: user ? "right" : "left", md: "left" }}
+          mt={2}
+        >
           <Link href="/">
             <svg
               aria-label="Instagram"
