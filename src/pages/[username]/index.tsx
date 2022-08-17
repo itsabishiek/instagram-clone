@@ -1,4 +1,13 @@
-import { Flex, Stack, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Button,
+  Flex,
+  Image,
+  Spinner,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import moment from "moment";
 import Head from "next/head";
 import React from "react";
@@ -7,7 +16,7 @@ import useUserData from "../../hooks/useUserData";
 type ProfilePageProps = {};
 
 const ProfilePage: React.FC<ProfilePageProps> = () => {
-  const { userStateValue } = useUserData();
+  const { userStateValue, loading } = useUserData();
   const userData = userStateValue?.userData;
 
   // console.log(userData);
@@ -25,43 +34,132 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
         />
       </Head>
 
-      <Stack h="calc(100vh - 60px)" align="center" justify="center">
-        <Flex>
-          <Text fontWeight={600} mr={1}>
-            UID:
-          </Text>
-          <Text>{userData?.uid}</Text>
+      {loading ? (
+        <Flex h="calc(90vh - 60px)" justify="center" align="center">
+          <Spinner
+            thickness="4px"
+            speed="0.65s"
+            emptyColor="gray.200"
+            color="brand.100"
+            size="lg"
+          />
         </Flex>
+      ) : (
+        <Box flexGrow={1} m="0px auto 30px" maxW="935px" p="30px 20px 0px">
+          <Flex flexDirection={{ base: "column", md: "row" }}>
+            <Flex
+              mr="30px"
+              flexGrow={{ base: 0, md: 1 }}
+              flexShrink={0}
+              align={{ base: "unset", md: "center" }}
+              justify={{ base: "unset", md: "center" }}
+              mb={{ base: 3, md: 0 }}
+            >
+              <Avatar src="" w="140px" h="140px" bg="gray.200" />
+            </Flex>
 
-        <Flex>
-          <Text fontWeight={600} mr={1}>
-            Full Name:
-          </Text>
-          <Text>{userData?.fullname}</Text>
-        </Flex>
-        <Flex>
-          <Text fontWeight={600} mr={1}>
-            Username:
-          </Text>
-          <Text>{userData?.username}</Text>
-        </Flex>
-        <Flex>
-          <Text fontWeight={600} mr={1}>
-            Email:
-          </Text>
-          <Text>{userData?.email}</Text>
-        </Flex>
-        {userData?.createdAt && (
-          <Flex>
-            <Text fontWeight={600} mr={1}>
-              CreatedAt:
-            </Text>
-            <Text>
-              {moment(new Date(userData.createdAt?.seconds * 1000)).fromNow()}
-            </Text>
+            <Stack flexGrow={2} flexBasis="30px" flexShrink={1}>
+              <Flex align="center">
+                <Text fontSize="28px" color="#262626" fontWeight="light" mr={6}>
+                  {userData.username}
+                </Text>
+                <Button
+                  variant="outline"
+                  color="#262626"
+                  fontSize="10pt"
+                  fontWeight="light"
+                  p="5px 9px"
+                  mr={2}
+                >
+                  Edit Profile
+                </Button>
+                <svg
+                  aria-label="Options"
+                  color="#262626"
+                  fill="#262626"
+                  height="24"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                >
+                  <circle
+                    cx="12"
+                    cy="12"
+                    fill="none"
+                    r="8.635"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  ></circle>
+                  <path
+                    d="M14.232 3.656a1.269 1.269 0 01-.796-.66L12.93 2h-1.86l-.505.996a1.269 1.269 0 01-.796.66m-.001 16.688a1.269 1.269 0 01.796.66l.505.996h1.862l.505-.996a1.269 1.269 0 01.796-.66M3.656 9.768a1.269 1.269 0 01-.66.796L2 11.07v1.862l.996.505a1.269 1.269 0 01.66.796m16.688-.001a1.269 1.269 0 01.66-.796L22 12.93v-1.86l-.996-.505a1.269 1.269 0 01-.66-.796M7.678 4.522a1.269 1.269 0 01-1.03.096l-1.06-.348L4.27 5.587l.348 1.062a1.269 1.269 0 01-.096 1.03m11.8 11.799a1.269 1.269 0 011.03-.096l1.06.348 1.318-1.317-.348-1.062a1.269 1.269 0 01.096-1.03m-14.956.001a1.269 1.269 0 01.096 1.03l-.348 1.06 1.317 1.318 1.062-.348a1.269 1.269 0 011.03.096m11.799-11.8a1.269 1.269 0 01-.096-1.03l.348-1.06-1.317-1.318-1.062.348a1.269 1.269 0 01-1.03-.096"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  ></path>
+                </svg>
+              </Flex>
+
+              <Flex
+                align="center"
+                gap={{ base: "0px", md: "40px" }}
+                pt={3}
+                pb={{ base: 3, md: 0 }}
+                borderTop={{ base: "1px solid rgb(219,219,219)", md: "none" }}
+                borderBottom={{
+                  base: "1px solid rgb(219,219,219)",
+                  md: "none",
+                }}
+                justify={{ base: "space-around", md: "left" }}
+                fontSize="10pt"
+                color="#8e8e8e"
+                fontWeight={500}
+              >
+                <Flex
+                  flexDirection={{ base: "column", md: "row" }}
+                  align="center"
+                >
+                  <Text fontWeight={600} mr={1} color="#262626">
+                    0
+                  </Text>
+                  <Text fontWeight="light">posts</Text>
+                </Flex>
+                <Flex
+                  flexDirection={{ base: "column", md: "row" }}
+                  align="center"
+                >
+                  <Text fontWeight={600} mr={1} color="#262626">
+                    {userData.followers}
+                  </Text>
+                  <Text fontWeight="light">followers</Text>
+                </Flex>
+                <Flex
+                  flexDirection={{ base: "column", md: "row" }}
+                  align="center"
+                >
+                  <Text fontWeight={600} mr={1} color="#262626">
+                    {userData.following}
+                  </Text>
+                  <Text fontWeight="light">following</Text>
+                </Flex>
+              </Flex>
+
+              <Stack pt={4}>
+                <Text fontWeight={700} color="#262626">
+                  {userData.fullname}
+                </Text>
+                <Stack fontSize="14px">
+                  <Text>🅤ɴɪǫᴜᴇ Lɪғᴇsᴛʏʟᴇ</Text>
+                  <Text>👑 King In My kingdom🏰</Text>
+                  <Text>🇮am not Rich 💍 but🇮am R O🇾🇦🇱 L😎</Text>
+                </Stack>
+              </Stack>
+            </Stack>
           </Flex>
-        )}
-      </Stack>
+        </Box>
+      )}
     </>
   );
 };

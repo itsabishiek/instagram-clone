@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import OAuthButtons from "../../components/OAuthButtons";
 import { auth, firestore } from "../../firebase/clientApp";
 import { FIREBASE_ERRORS } from "../../firebase/errors";
 
@@ -26,6 +27,7 @@ const SignupPage = () => {
   });
   const [createUserWithEmailAndPassword, user, userLoading, userError] =
     useCreateUserWithEmailAndPassword(auth);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,21 +45,25 @@ const SignupPage = () => {
     createUserWithEmailAndPassword(signupForm.email, signupForm.password);
   };
 
-  console.log(user);
+  // console.log(user);
 
   const createUserDocument = async (user: User) => {
+    setLoading(true);
     try {
       await addDoc(collection(firestore, "users"), {
         uid: user.uid,
         fullname: signupForm.fullname,
         username: signupForm.username,
         email: user.email,
+        follower: 0,
+        following: 0,
         createdAt: serverTimestamp(),
       });
       router.push("/");
     } catch (error) {
       console.log("createUserDocument Error", error);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -106,22 +112,7 @@ const SignupPage = () => {
               Sign up to see photos and videos from your friends.
             </Text>
 
-            <Button
-              alignItems="center"
-              justifyContent="center"
-              cursor="pointer"
-              h="30px"
-            >
-              <Image
-                src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
-                alt=""
-                h="25px"
-                mr={1}
-              />
-              <Text fontWeight={600} fontSize="10pt" color="white">
-                Log in with Google
-              </Text>
-            </Button>
+            <OAuthButtons />
 
             <Flex align="center" p="10px 0px">
               <Divider />
@@ -224,7 +215,7 @@ const SignupPage = () => {
                   <Button
                     height="30px"
                     type="submit"
-                    isLoading={userLoading}
+                    isLoading={loading}
                     isDisabled={userDisabled}
                   >
                     Sign up

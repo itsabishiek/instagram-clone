@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import OAuthButtons from "../../components/OAuthButtons";
 import { auth } from "../../firebase/clientApp";
 import { FIREBASE_ERRORS } from "../../firebase/errors";
 
@@ -146,17 +147,8 @@ const LoginPage: React.FC<LoginPageProps> = () => {
                 <Divider />
               </Flex>
 
-              <Flex align="center" justify="center" cursor="pointer">
-                <Image
-                  src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-webinar-optimizing-for-success-google-business-webinar-13.png"
-                  alt=""
-                  h="25px"
-                  mr={1}
-                />
-                <Text fontWeight={600} fontSize="10pt" color="gray.600">
-                  Log in with Google
-                </Text>
-              </Flex>
+              <OAuthButtons login={true} />
+
               <Text fontSize="9pt" textAlign="center" p="8px 0px 20px 0px">
                 Forgot password?
               </Text>

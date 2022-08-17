@@ -17,10 +17,10 @@ const Home: NextPage = () => {
 
       <PageContent>
         <>
-          <Text bg="red">Left Side</Text>
+          <Text>Left Side</Text>
         </>
         <>
-          <Text bg="cyan">Right Side</Text>
+          <Text>Right Side</Text>
         </>
       </PageContent>
     </div>

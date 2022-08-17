@@ -6,6 +6,8 @@ export type UserData = {
   email: string;
   fullname: string;
   username: string;
+  followers: number;
+  following: number;
   createdAt?: Timestamp;
   imageURL?: string;
 };
