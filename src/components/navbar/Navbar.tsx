@@ -23,6 +23,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       top="0px"
       position="sticky"
       w="100%"
+      zIndex={999}
     >
       <Flex width="935px">
         {user && (

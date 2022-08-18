@@ -1,9 +1,9 @@
-import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
+import type { AppProps } from "next/app";
+import { useEffect, useState } from "react";
+import { RecoilRoot } from "recoil";
 import { theme } from "../chakra/theme";
 import Layout from "../components/layout/Layout";
-import { RecoilRoot } from "recoil";
-import { useEffect, useState } from "react";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [showChild, setShowChild] = useState(false);
@@ -32,3 +32,5 @@ function MyApp({ Component, pageProps }: AppProps) {
 }
 
 export default MyApp;
+
+// https://voonze.com/wp-content/uploads/2021/11/Lite.jpg
