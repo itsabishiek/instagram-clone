@@ -30,13 +30,8 @@ export const Button: ComponentStyleConfig = {
       color: "#0095f6",
       cursor: "pointer",
     },
-    oauth: {
-      height: "34px",
-      border: "1px solid",
-      borderColor: "gray.300",
-      _hover: {
-        bg: "gray.50",
-      },
+    uploadButton: {
+      color: "inherit",
     },
   },
 };

@@ -19,7 +19,10 @@ const useUserData = () => {
         where("uid", "==", user.uid)
       );
       const userDoc = await getDocs(userQuery);
-      const userData = userDoc.docs.map((doc) => doc.data());
+      const userData = userDoc.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setUserStateValue((prev) => ({
         ...prev,
         userData: userData[0] as UserData,

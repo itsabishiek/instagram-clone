@@ -41,7 +41,7 @@ const OAuthButtons: React.FC<OAuthButtonsProps> = ({ login }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  console.log(user);
+  // console.log(user);
 
   return (
     <>

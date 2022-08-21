@@ -9,6 +9,9 @@ export const theme = extendTheme({
     brand: {
       100: "#0095f6",
     },
+    bg: {
+      100: "rgb(250, 250, 250)",
+    },
   },
   fonts: {
     body: "Open Sans, sans-serif",

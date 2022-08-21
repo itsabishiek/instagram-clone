@@ -11,16 +11,24 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EditSidebar from "../../../components/EditSidebar";
+import ProfileUploadModal from "../../../components/modals/ProfileUploadModal";
 import useUserData from "../../../hooks/useUserData";
 
 const EditPage: React.FC = () => {
   const { userStateValue, loading } = useUserData();
   const userData = userStateValue?.userData;
-  const [name, setName] = useState(userData.fullname);
-  const [username, setUsername] = useState(userData.username);
-  const [email, setEmail] = useState(userData.email);
+  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+
+  // console.log(userData);
+  useEffect(() => {
+    setName(userData.fullname);
+    setUsername(userData.username);
+    setEmail(userData.email);
+  }, [userData]);
 
   if (loading) {
     return (
@@ -55,7 +63,7 @@ const EditPage: React.FC = () => {
         pb="40px"
       >
         <Flex
-          bg="white"
+          bg={{ base: "transparent", md: "white" }}
           w="100%"
           border={{ base: "none", md: "1px solid" }}
           borderColor={{ md: "gray.200" }}
@@ -74,19 +82,23 @@ const EditPage: React.FC = () => {
               w="100%"
               pl={{ base: "0px", md: "155px" }}
             >
-              <Avatar src="" w="38px" h="38px" />
+              <Avatar src={userData?.imageURL} w="38px" h="38px" />
               <Flex flexDir="column">
                 <Text fontSize="14pt" fontWeight={500} color="black">
                   {userData?.username}
                 </Text>
-                <Text
-                  fontSize="10pt"
-                  color="brand.100"
-                  fontWeight={600}
-                  cursor="pointer"
-                >
-                  Change profile photo
-                </Text>
+                <ProfileUploadModal userData={userData}>
+                  <Text
+                    fontSize="10pt"
+                    color="brand.100"
+                    fontWeight={600}
+                    cursor="pointer"
+                  >
+                    {userData?.imageURL
+                      ? "Change profile photo"
+                      : "Add profile photo"}
+                  </Text>
+                </ProfileUploadModal>
               </Flex>
             </Flex>
             <Flex pt={4} flexDirection={{ base: "column", md: "row" }}>
@@ -337,7 +349,7 @@ const EditPage: React.FC = () => {
             <Flex
               align="center"
               justify="space-between"
-              mt={{ base: 5, md: 8 }}
+              pt={5}
               pl={{ base: "0px", md: "100px" }}
             >
               <Button h="28px" mr="40px">

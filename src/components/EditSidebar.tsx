@@ -10,37 +10,93 @@ const EditSidebar: React.FC = () => {
       p="5px 0px"
       display={{ base: "none", md: "flex" }}
     >
-      <Text p="12px 12px 12px 30px" fontWeight={700} fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontWeight={700}
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Edit profile
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Change password
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Apps and websites
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Email notifications
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Push notifications
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Manage accounts
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Privacy and security
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Ads
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Login activity
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Emails from Instagram
       </Text>
-      <Text p="12px 12px 12px 30px" fontSize="15px">
+      <Text
+        p="12px 12px 12px 30px"
+        fontSize="15px"
+        _hover={{ bg: "bg.100" }}
+        cursor="pointer"
+      >
         Help
       </Text>
 

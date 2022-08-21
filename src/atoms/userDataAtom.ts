@@ -2,6 +2,7 @@ import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
 
 export type UserData = {
+  id: string;
   uid: string;
   email: string;
   fullname: string;
