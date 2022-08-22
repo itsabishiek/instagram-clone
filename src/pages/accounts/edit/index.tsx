@@ -10,24 +10,64 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
+import { doc, updateDoc } from "firebase/firestore";
 import Head from "next/head";
 import React, { useEffect, useState } from "react";
+import { UserData } from "../../../atoms/userDataAtom";
 import EditSidebar from "../../../components/EditSidebar";
 import ProfileUploadModal from "../../../components/modals/ProfileUploadModal";
+import { firestore } from "../../../firebase/clientApp";
 import useUserData from "../../../hooks/useUserData";
 
 const EditPage: React.FC = () => {
-  const { userStateValue, loading } = useUserData();
+  const { userStateValue, setUserStateValue, loading } = useUserData();
   const userData = userStateValue?.userData;
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [bio, setBio] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [website, setWebsite] = useState("");
+  const [updating, setUpdating] = useState(false);
+
+  const onUpdateAccount = async () => {
+    setUpdating(true);
+    try {
+      await updateDoc(doc(firestore, "users", userData.id), {
+        fullname: name,
+        username,
+        email,
+        bio: bio || "",
+        phoneNumber: phoneNumber || "",
+        website: website || "",
+      });
+
+      setUserStateValue((prev) => ({
+        ...prev,
+        userData: {
+          ...prev.userData,
+          fullname: name,
+          username,
+          email,
+          bio: bio || "",
+          phoneNumber: phoneNumber || "",
+          website: website || "",
+        },
+      }));
+    } catch (error) {
+      console.log("onUpdateAccount Error", error);
+    }
+    setUpdating(false);
+  };
 
   // console.log(userData);
   useEffect(() => {
     setName(userData.fullname);
     setUsername(userData.username);
     setEmail(userData.email);
+    setBio(userData?.bio!);
+    setWebsite(userData?.website!);
+    setPhoneNumber(userData?.phoneNumber!);
   }, [userData]);
 
   if (loading) {
@@ -178,6 +218,8 @@ const EditPage: React.FC = () => {
                 w="355px"
                 placeholder="Website"
                 _placeholder={{ fontSize: "11pt" }}
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
               />
             </Flex>
             <Flex pt={4} flexDirection={{ base: "column", md: "row" }}>
@@ -197,6 +239,8 @@ const EditPage: React.FC = () => {
                 w="355px"
                 placeholder="Bio"
                 _placeholder={{ fontSize: "11pt" }}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
               />
             </Flex>
             <Flex pt={4} flexDirection={{ base: "column", md: "row" }}>
@@ -285,6 +329,8 @@ const EditPage: React.FC = () => {
                 w="355px"
                 placeholder="Phone number"
                 _placeholder={{ fontSize: "11pt" }}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
               />
             </Flex>
 
@@ -339,7 +385,7 @@ const EditPage: React.FC = () => {
                   _placeholder={{ fontSize: "11pt" }}
                   type="checkbox"
                 />
-                <Text fontSize="10pt" ml={2} color="gray.500">
+                <Text fontSize="9pt" ml={2} color="gray.500">
                   Include your account when recommending similar accounts people
                   might want to follow.
                 </Text>
@@ -352,7 +398,12 @@ const EditPage: React.FC = () => {
               pt={5}
               pl={{ base: "0px", md: "100px" }}
             >
-              <Button h="28px" mr="40px">
+              <Button
+                h="28px"
+                mr="40px"
+                isLoading={updating}
+                onClick={onUpdateAccount}
+              >
                 Submit
               </Button>
               <Text

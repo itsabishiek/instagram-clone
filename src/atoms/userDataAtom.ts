@@ -11,6 +11,9 @@ export type UserData = {
   following: number;
   createdAt?: Timestamp;
   imageURL?: string;
+  website?: string;
+  bio?: string;
+  phoneNumber?: string;
 };
 
 interface UserState {

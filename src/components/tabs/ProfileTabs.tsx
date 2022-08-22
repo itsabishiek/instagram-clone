@@ -1,4 +1,14 @@
-import { Tabs, TabList, Tab, Text } from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  Tab,
+  Text,
+  TabPanels,
+  TabPanel,
+  Image,
+  Stack,
+  Flex,
+} from "@chakra-ui/react";
 import React from "react";
 
 const ProfileTabs: React.FC = () => {
@@ -9,10 +19,15 @@ const ProfileTabs: React.FC = () => {
         isFitted={false}
         pt={6}
         display={{ base: "none", md: "flex" }}
-        justifyContent="center"
-        borderBottom="1px solid rgb(219,219,219)"
+        flexDirection="column"
+        alignItems="center"
       >
-        <TabList border="none">
+        <TabList
+          display="flex"
+          justifyContent="center"
+          w="100%"
+          borderBottom="1px solid rgb(219,219,219)"
+        >
           <Tab
             mr={{ base: "0px", md: "40px" }}
             _selected={{ borderColor: "#262626" }}
@@ -169,25 +184,112 @@ const ProfileTabs: React.FC = () => {
             </Text>
           </Tab>
         </TabList>
+
+        <TabPanels>
+          <TabPanel>
+            <Flex
+              w="100%"
+              mt={3}
+              flexDir={{ base: "column-reverse", md: "row" }}
+            >
+              <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
+
+              <Stack
+                w="100%"
+                h={{ md: "380px" }}
+                align="center"
+                justify="center"
+                p={{ base: "40px 0px" }}
+                textAlign="center"
+              >
+                <Text fontWeight={700} fontSize={{ base: "11pt" }}>
+                  Start capturing and sharing your moments.
+                </Text>
+                <Text fontSize="10pt">
+                  Get the app to share your first photo or video.
+                </Text>
+                <Flex justify="center" pt={2}>
+                  <Image
+                    src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
+                    alt=""
+                    w="136px"
+                    mr={2}
+                  />
+                  <Image
+                    src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
+                    alt=""
+                    w="136px"
+                  />
+                </Flex>
+              </Stack>
+            </Flex>
+          </TabPanel>
+          <TabPanel>
+            <Flex
+              flexDir="column"
+              align="center"
+              justify="center"
+              margin="60px 44px"
+            >
+              <Flex border="1px solid" borderColor="black" borderRadius="full">
+                <Image
+                  src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                  alt=""
+                  h="50px"
+                  w="50px"
+                  m="8px"
+                />
+              </Flex>
+              <Text fontWeight="light" fontSize="18pt" mt={3} mb={2}>
+                Saved photos and reels
+              </Text>
+              <Text fontSize="11pt" color="black">
+                {`When photos/reels that you saved, they'll appear here.`}
+              </Text>
+            </Flex>
+          </TabPanel>
+          <TabPanel>
+            <Flex
+              flexDir="column"
+              align="center"
+              justify="center"
+              margin="60px 44px"
+            >
+              <Flex border="1px solid" borderColor="black" borderRadius="full">
+                <Image
+                  src="https://static.thenounproject.com/png/771247-200.png"
+                  alt=""
+                  h="50px"
+                  w="50px"
+                  m="8px"
+                />
+              </Flex>
+              <Text fontWeight="light" fontSize="18pt" mt={3} mb={2}>
+                Photos of you
+              </Text>
+              <Text fontSize="11pt" color="black">
+                {`When people tag you in photos, they'll appear here.`}
+              </Text>
+            </Flex>
+          </TabPanel>
+        </TabPanels>
       </Tabs>
 
       <Tabs
         w="100%"
         isFitted={true}
-        pt={6}
         display={{ base: "unset", md: "none" }}
         borderBottom="1px solid rgb(219,219,219)"
-        mt={1}
       >
-        <TabList border="none">
+        <TabList border="none" pt={2} gap="25px">
           <Tab
             mr={{ base: "0px", md: "40px" }}
-            _selected={{ border: "none", borderColor: "none" }}
+            _selected={{ borderColor: "#262626" }}
           >
             <svg
               aria-label="Posts"
-              color="#0095f6"
-              fill="#0095f6"
+              color="#8e8e8e"
+              fill="#8e8e8e"
               height="24"
               role="img"
               viewBox="0 0 24 24"
@@ -252,7 +354,7 @@ const ProfileTabs: React.FC = () => {
           </Tab>
           <Tab
             mr={{ base: "0px", md: "40px" }}
-            _selected={{ border: "none", borderColor: "none" }}
+            _selected={{ borderColor: "#262626" }}
           >
             <svg
               aria-label="Saved"
@@ -273,7 +375,7 @@ const ProfileTabs: React.FC = () => {
               ></polygon>
             </svg>
           </Tab>
-          <Tab _selected={{ border: "none", borderColor: "none" }}>
+          <Tab _selected={{ borderColor: "#262626" }}>
             <svg
               aria-label="Tagged"
               color="#8e8e8e"
@@ -320,6 +422,53 @@ const ProfileTabs: React.FC = () => {
             </Text>
           </Tab>
         </TabList>
+
+        <TabPanels display={{ base: "unset", md: "unset" }}>
+          <TabPanel>
+            <Flex
+              w="100%"
+              mt={3}
+              flexDir={{ base: "column-reverse", md: "row" }}
+            >
+              <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
+
+              <Stack
+                w="100%"
+                h={{ md: "380px" }}
+                align="center"
+                justify="center"
+                p={{ base: "40px 0px" }}
+                textAlign="center"
+              >
+                <Text fontWeight={700} fontSize={{ base: "11pt" }}>
+                  Start capturing and sharing your moments.
+                </Text>
+                <Text fontSize="10pt">
+                  Get the app to share your first photo or video.
+                </Text>
+                <Flex justify="center" pt={2}>
+                  <Image
+                    src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
+                    alt=""
+                    w="136px"
+                    mr={2}
+                  />
+                  <Image
+                    src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
+                    alt=""
+                    w="136px"
+                  />
+                </Flex>
+              </Stack>
+            </Flex>
+          </TabPanel>
+          <TabPanel>
+            <p>two!</p>
+          </TabPanel>
+          <TabPanel>
+            <p>three!</p>
+          </TabPanel>
+        </TabPanels>
       </Tabs>
     </>
   );

@@ -1,13 +1,18 @@
-import { Avatar, Link, Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Avatar, Box, Link, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
+import useUserData from "../../hooks/useUserData";
 import UserMenu from "../../menus/UserMenu";
+import PostUploadModal from "../modals/PostUploadModal";
 
 type BottomNavbarProps = {
   user?: User | null;
 };
 
 const BottomNavbar: React.FC<BottomNavbarProps> = () => {
+  const { userStateValue, loading } = useUserData();
+  const userData = userStateValue?.userData;
+
   return (
     <Tabs
       position="fixed"
@@ -80,49 +85,51 @@ const BottomNavbar: React.FC<BottomNavbarProps> = () => {
         </Tab>
 
         <Tab>
-          <Link href="/">
-            <svg
-              aria-label="New post"
-              color="#262626"
-              fill="#262626"
-              height="24"
-              role="img"
-              viewBox="0 0 24 24"
-              width="24"
-              cursor="pointer"
-            >
-              <path
-                d="M2 12v3.45c0 2.849.698 4.005 1.606 4.944.94.909 2.098 1.608 4.946 1.608h6.896c2.848 0 4.006-.7 4.946-1.608C21.302 19.455 22 18.3 22 15.45V8.552c0-2.849-.698-4.006-1.606-4.945C19.454 2.7 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.547 2 5.703 2 8.552z"
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              ></path>
-              <line
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                x1="6.545"
-                x2="17.455"
-                y1="12.001"
-                y2="12.001"
-              ></line>
-              <line
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                x1="12.003"
-                x2="12.003"
-                y1="6.545"
-                y2="17.455"
-              ></line>
-            </svg>
-          </Link>
+          <PostUploadModal>
+            <Box>
+              <svg
+                aria-label="New post"
+                color="#262626"
+                fill="#262626"
+                height="24"
+                role="img"
+                viewBox="0 0 24 24"
+                width="24"
+                cursor="pointer"
+              >
+                <path
+                  d="M2 12v3.45c0 2.849.698 4.005 1.606 4.944.94.909 2.098 1.608 4.946 1.608h6.896c2.848 0 4.006-.7 4.946-1.608C21.302 19.455 22 18.3 22 15.45V8.552c0-2.849-.698-4.006-1.606-4.945C19.454 2.7 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.547 2 5.703 2 8.552z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="6.545"
+                  x2="17.455"
+                  y1="12.001"
+                  y2="12.001"
+                ></line>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="12.003"
+                  x2="12.003"
+                  y1="6.545"
+                  y2="17.455"
+                ></line>
+              </svg>
+            </Box>
+          </PostUploadModal>
         </Tab>
 
         <Tab>
@@ -144,7 +151,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = () => {
 
         <Tab>
           <UserMenu>
-            <Avatar size="xs" />
+            <Avatar src={userData?.imageURL} size="xs" />
           </UserMenu>
         </Tab>
       </TabList>

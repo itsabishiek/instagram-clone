@@ -1,6 +1,8 @@
 import { Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import HomeLeft from "../components/home/HomeLeft";
+import HomeRight from "../components/home/HomeRight";
 import PageContent from "../components/layout/PageContent";
 
 const Home: NextPage = () => {
@@ -17,10 +19,10 @@ const Home: NextPage = () => {
 
       <PageContent>
         <>
-          <Text>Left Side</Text>
+          <HomeLeft />
         </>
         <>
-          <Text>Right Side</Text>
+          <HomeRight />
         </>
       </PageContent>
     </div>

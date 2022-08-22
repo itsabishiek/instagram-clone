@@ -66,7 +66,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
             mb={{ base: 3, md: 0 }}
           >
             <Avatar
-              src=""
+              src={userData?.imageURL}
               w={{ base: "77px", md: "140px" }}
               h={{ base: "77px", md: "140px" }}
               bg="gray.200"
@@ -135,9 +135,7 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
               {userData.fullname}
             </Text>
             <Stack fontSize="9pt">
-              <Text>🅤ɴɪǫᴜᴇ Lɪғᴇsᴛʏʟᴇ</Text>
-              <Text>👑 King In My kingdom🏰</Text>
-              <Text>🇮am not Rich 💍 but 🇮am RO🇾🇦L😎</Text>
+              <Text w="300px">{userData?.bio}</Text>
             </Stack>
           </Stack>
 
@@ -237,48 +235,13 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
                 {userData.fullname}
               </Text>
               <Stack fontSize="14px">
-                <Text>🅤ɴɪǫᴜᴇ Lɪғᴇsᴛʏʟᴇ</Text>
-                <Text>👑 King In My kingdom🏰</Text>
-                <Text>🇮am not Rich 💍 but🇮am R O🇾🇦🇱 L😎</Text>
+                <Text w="300px">{userData?.bio}</Text>
               </Stack>
             </Stack>
           </Stack>
         </Flex>
 
         <ProfileTabs />
-
-        <Flex w="100%" mt={6} flexDir={{ base: "column-reverse", md: "row" }}>
-          <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
-
-          <Stack
-            w="100%"
-            h={{ md: "380px" }}
-            align="center"
-            justify="center"
-            p={{ base: "40px 0px" }}
-            textAlign="center"
-          >
-            <Text fontWeight={700} fontSize={{ base: "11pt" }}>
-              Start capturing and sharing your moments.
-            </Text>
-            <Text fontSize="10pt">
-              Get the app to share your first photo or video.
-            </Text>
-            <Flex justify="center" pt={2}>
-              <Image
-                src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
-                alt=""
-                w="136px"
-                mr={2}
-              />
-              <Image
-                src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
-                alt=""
-                w="136px"
-              />
-            </Flex>
-          </Stack>
-        </Flex>
       </Box>
     </>
   );
