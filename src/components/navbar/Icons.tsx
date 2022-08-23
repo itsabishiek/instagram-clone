@@ -9,7 +9,7 @@ const Icons: React.FC = () => {
   const userData = userStateValue?.userData;
 
   return (
-    <Flex align="center" gap={6}>
+    <Flex align="center" gap={{ md: 6 }}>
       <Link href="/" display={{ base: "none", md: "flex" }}>
         <svg
           aria-label="Home"
@@ -69,6 +69,7 @@ const Icons: React.FC = () => {
             alignItems="center"
             justifyContent="center"
             fontSize="11px"
+            pointerEvents="none"
           >
             1
           </Box>

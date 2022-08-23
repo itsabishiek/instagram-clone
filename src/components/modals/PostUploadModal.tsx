@@ -11,10 +11,13 @@ import {
   Box,
   Text,
   Flex,
+  Image,
+  Textarea,
 } from "@chakra-ui/react";
 import Head from "next/head";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useSelectedFile from "../../hooks/useSelectedFile";
+import DiscardModal from "./DiscardModal";
 
 type PostUploadModalProps = {
   children: React.ReactNode;
@@ -22,8 +25,11 @@ type PostUploadModalProps = {
 
 const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { onSelectFile, selectedFile } = useSelectedFile();
+  const { onSelectFile, selectedFile, setSelectedFile } = useSelectedFile();
   const selectedFileRef = useRef<HTMLInputElement>(null);
+  const [nextStep, setNextStep] = useState(0);
+
+  console.log(nextStep);
 
   return (
     <>
@@ -44,62 +50,288 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-        size={{ sm: "xs", base: "sm", md: "lg" }}
+        size={{ sm: "xs", base: "sm", md: nextStep === 0 ? "lg" : "full" }}
       >
         <ModalOverlay />
-        <ModalContent borderRadius="xl" outline="none">
-          <Text
-            fontWeight={600}
-            borderBottom="1px solid"
-            borderColor="gray.200"
-            textAlign="center"
-            p="10px 0px"
-          >
-            Create new post
-          </Text>
-          <Flex flexDir="column" height="60vh" align="center" justify="center">
-            <svg
-              aria-label="Icon to represent media such as images or videos"
-              color="#262626"
-              fill="#262626"
-              height="77"
-              role="img"
-              viewBox="0 0 97.6 77.3"
-              width="96"
-            >
-              <path
-                d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z"
-                fill="currentColor"
-              ></path>
-              <path
-                d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.7-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c.7.6 1.6.9 2.5.9.9 0 1.7-.5 2.3-1.1l7.8-8.8-1.1 18.6-21.9 1.1zm76.5-29.5l-2 34c-.3 4.6-4.3 8.2-8.9 7.9l-34-2c-4.6-.3-8.2-4.3-7.9-8.9l2-34c.3-4.4 3.9-7.9 8.4-7.9h.5l34 2c4.7.3 8.2 4.3 7.9 8.9z"
-                fill="currentColor"
-              ></path>
-              <path
-                d="M78.2 41.6L61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6l-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z"
-                fill="currentColor"
-              ></path>
-            </svg>
+        <ModalContent
+          borderRadius="xl"
+          outline="none"
+          margin={{ md: nextStep === 1 ? "90px 120px" : "" }}
+        >
+          {!selectedFile ? (
+            <>
+              <Text
+                fontWeight={600}
+                borderBottom="1px solid"
+                borderColor="gray.200"
+                textAlign="center"
+                p="10px 0px"
+              >
+                Create new post
+              </Text>
+              <Flex
+                flexDir="column"
+                height="60vh"
+                align="center"
+                justify="center"
+              >
+                <svg
+                  aria-label="Icon to represent media such as images or videos"
+                  color="#262626"
+                  fill="#262626"
+                  height="77"
+                  role="img"
+                  viewBox="0 0 97.6 77.3"
+                  width="96"
+                >
+                  <path
+                    d="M16.3 24h.3c2.8-.2 4.9-2.6 4.8-5.4-.2-2.8-2.6-4.9-5.4-4.8s-4.9 2.6-4.8 5.4c.1 2.7 2.4 4.8 5.1 4.8zm-2.4-7.2c.5-.6 1.3-1 2.1-1h.2c1.7 0 3.1 1.4 3.1 3.1 0 1.7-1.4 3.1-3.1 3.1-1.7 0-3.1-1.4-3.1-3.1 0-.8.3-1.5.8-2.1z"
+                    fill="currentColor"
+                  ></path>
+                  <path
+                    d="M84.7 18.4L58 16.9l-.2-3c-.3-5.7-5.2-10.1-11-9.8L12.9 6c-5.7.3-10.1 5.3-9.8 11L5 51v.8c.7 5.2 5.1 9.1 10.3 9.1h.6l21.7-1.2v.6c-.3 5.7 4 10.7 9.8 11l34 2h.6c5.5 0 10.1-4.3 10.4-9.8l2-34c.4-5.8-4-10.7-9.7-11.1zM7.2 10.8C8.7 9.1 10.8 8.1 13 8l34-1.9c4.6-.3 8.6 3.3 8.9 7.9l.2 2.8-5.3-.3c-5.7-.3-10.7 4-11 9.8l-.6 9.5-9.5 10.7c-.2.3-.6.4-1 .5-.4 0-.7-.1-1-.4l-7.8-7c-1.4-1.3-3.5-1.1-4.8.3L7 49 5.2 17c-.2-2.3.6-4.5 2-6.2zm8.7 48c-4.3.2-8.1-2.8-8.8-7.1l9.4-10.5c.2-.3.6-.4 1-.5.4 0 .7.1 1 .4l7.8 7c.7.6 1.6.9 2.5.9.9 0 1.7-.5 2.3-1.1l7.8-8.8-1.1 18.6-21.9 1.1zm76.5-29.5l-2 34c-.3 4.6-4.3 8.2-8.9 7.9l-34-2c-4.6-.3-8.2-4.3-7.9-8.9l2-34c.3-4.4 3.9-7.9 8.4-7.9h.5l34 2c4.7.3 8.2 4.3 7.9 8.9z"
+                    fill="currentColor"
+                  ></path>
+                  <path
+                    d="M78.2 41.6L61.3 30.5c-2.1-1.4-4.9-.8-6.2 1.3-.4.7-.7 1.4-.7 2.2l-1.2 20.1c-.1 2.5 1.7 4.6 4.2 4.8h.3c.7 0 1.4-.2 2-.5l18-9c2.2-1.1 3.1-3.8 2-6-.4-.7-.9-1.3-1.5-1.8zm-1.4 6l-18 9c-.4.2-.8.3-1.3.3-.4 0-.9-.2-1.2-.4-.7-.5-1.2-1.3-1.1-2.2l1.2-20.1c.1-.9.6-1.7 1.4-2.1.8-.4 1.7-.3 2.5.1L77 43.3c1.2.8 1.5 2.3.7 3.4-.2.4-.5.7-.9.9z"
+                    fill="currentColor"
+                  ></path>
+                </svg>
 
-            <Text fontWeight="light" fontSize="15pt" mt={3}>
-              Drag photos and videos here
-            </Text>
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png"
-              hidden
-              ref={selectedFileRef}
-              onChange={onSelectFile}
-            />
-            <Button
-              h="30px"
-              mt={5}
-              onClick={() => selectedFileRef.current?.click()}
-            >
-              Select from computer
-            </Button>
-          </Flex>
+                <Text fontWeight="light" fontSize="15pt" mt={3}>
+                  Drag photos and videos here
+                </Text>
+                <input
+                  id="file-upload"
+                  type="file"
+                  accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png"
+                  hidden
+                  ref={selectedFileRef}
+                  onChange={onSelectFile}
+                />
+                <Button
+                  h="30px"
+                  mt={5}
+                  onClick={() => selectedFileRef.current?.click()}
+                >
+                  Select from computer
+                </Button>
+              </Flex>
+            </>
+          ) : (
+            <>
+              {nextStep === 0 && (
+                <>
+                  <Flex
+                    align="center"
+                    justifyContent="space-between"
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    p="10px 14px"
+                    zIndex={3}
+                    bg="white"
+                  >
+                    <DiscardModal setSelectedFile={setSelectedFile}>
+                      <svg
+                        aria-label="Back"
+                        color="#262626"
+                        fill="#262626"
+                        height="24"
+                        role="img"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        cursor="pointer"
+                      >
+                        <line
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          x1="2.909"
+                          x2="22.001"
+                          y1="12.004"
+                          y2="12.004"
+                        ></line>
+                        <polyline
+                          fill="none"
+                          points="9.276 4.726 2.001 12.004 9.276 19.274"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                        ></polyline>
+                      </svg>
+                    </DiscardModal>
+                    <Text fontWeight={600}>Crop</Text>
+                    <Text
+                      fontSize="11pt"
+                      color="brand.100"
+                      fontWeight={600}
+                      cursor="pointer"
+                      onClick={() => setNextStep(1)}
+                    >
+                      Next
+                    </Text>
+                  </Flex>
+
+                  <Flex
+                    flexDir="column"
+                    h="60vh"
+                    align="center"
+                    justify="center"
+                  >
+                    <Image src={selectedFile} alt="" />
+                  </Flex>
+
+                  <ModalFooter justifyContent="space-between">
+                    <Flex>
+                      <Box
+                        bg="rgba(26, 26, 26, .8)"
+                        p="8px"
+                        borderRadius="full"
+                        cursor="pointer"
+                        _hover={{ opacity: 0.8 }}
+                        mr={4}
+                      >
+                        <svg
+                          aria-label="Select crop"
+                          color="#ffffff"
+                          fill="#ffffff"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="16"
+                        >
+                          <path d="M10 20H4v-6a1 1 0 00-2 0v7a1 1 0 001 1h7a1 1 0 000-2zM20.999 2H14a1 1 0 000 2h5.999v6a1 1 0 002 0V3a1 1 0 00-1-1z"></path>
+                        </svg>
+                      </Box>
+                      <Box
+                        bg="rgba(26, 26, 26, .8)"
+                        p="8px"
+                        borderRadius="full"
+                        cursor="pointer"
+                        _hover={{ opacity: 0.8 }}
+                      >
+                        <svg
+                          aria-label="Select zoom"
+                          color="#ffffff"
+                          fill="#ffffff"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="16"
+                        >
+                          <path d="M22.707 21.293l-4.825-4.825a9.519 9.519 0 10-1.414 1.414l4.825 4.825a1 1 0 001.414-1.414zM10.5 18.001a7.5 7.5 0 117.5-7.5 7.509 7.509 0 01-7.5 7.5zm3.5-8.5h-2.5v-2.5a1 1 0 10-2 0v2.5H7a1 1 0 100 2h2.5v2.5a1 1 0 002 0v-2.5H14a1 1 0 000-2z"></path>
+                        </svg>
+                      </Box>
+                    </Flex>
+                    <Box
+                      bg="rgba(26, 26, 26, .8)"
+                      p="8px"
+                      borderRadius="full"
+                      cursor="pointer"
+                      _hover={{ opacity: 0.8 }}
+                    >
+                      <svg
+                        aria-label="Open media gallery"
+                        color="#ffffff"
+                        fill="#ffffff"
+                        height="16"
+                        role="img"
+                        viewBox="0 0 24 24"
+                        width="16"
+                      >
+                        <path
+                          d="M19 15V5a4.004 4.004 0 00-4-4H5a4.004 4.004 0 00-4 4v10a4.004 4.004 0 004 4h10a4.004 4.004 0 004-4zM3 15V5a2.002 2.002 0 012-2h10a2.002 2.002 0 012 2v10a2.002 2.002 0 01-2 2H5a2.002 2.002 0 01-2-2zm18.862-8.773A.501.501 0 0021 6.57v8.431a6 6 0 01-6 6H6.58a.504.504 0 00-.35.863A3.944 3.944 0 009 23h6a8 8 0 008-8V9a3.95 3.95 0 00-1.138-2.773z"
+                          fillRule="evenodd"
+                        ></path>
+                      </svg>
+                    </Box>
+                  </ModalFooter>
+                </>
+              )}
+
+              {nextStep === 1 && (
+                <>
+                  <Flex
+                    align="center"
+                    justifyContent="space-between"
+                    borderBottom="1px solid"
+                    borderColor="gray.200"
+                    p="10px 14px"
+                    zIndex={3}
+                    bg="white"
+                  >
+                    <Box onClick={() => setNextStep(0)}>
+                      <svg
+                        aria-label="Back"
+                        color="#262626"
+                        fill="#262626"
+                        height="24"
+                        role="img"
+                        viewBox="0 0 24 24"
+                        width="24"
+                        cursor="pointer"
+                      >
+                        <line
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          x1="2.909"
+                          x2="22.001"
+                          y1="12.004"
+                          y2="12.004"
+                        ></line>
+                        <polyline
+                          fill="none"
+                          points="9.276 4.726 2.001 12.004 9.276 19.274"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                        ></polyline>
+                      </svg>
+                    </Box>
+                    <Text fontWeight={600}>Create new post</Text>
+                    <Text
+                      fontSize="11pt"
+                      color="brand.100"
+                      fontWeight={600}
+                      cursor="pointer"
+                    >
+                      Share
+                    </Text>
+                  </Flex>
+
+                  <Flex
+                    flexDir={{ base: "column", md: "row" }}
+                    height="60vh"
+                    align="center"
+                    justify="center"
+                  >
+                    <Flex
+                      flexDir="column"
+                      minH="60vh"
+                      align="center"
+                      justify="center"
+                      border="1px solid"
+                      borderColor="gray.200"
+                      w="100%"
+                      flex="0 0 50%"
+                    >
+                      <Image src={selectedFile} alt="" />
+                    </Flex>
+                    <Flex flexDir="column" w="100%" flex="0 0 50%">
+                      <Textarea placeholder="Write a caption" />
+                    </Flex>
+                  </Flex>
+                </>
+              )}
+            </>
+          )}
         </ModalContent>
       </Modal>
     </>

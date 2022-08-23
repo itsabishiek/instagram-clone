@@ -239,6 +239,7 @@ const EditPage: React.FC = () => {
                 w="355px"
                 placeholder="Bio"
                 _placeholder={{ fontSize: "11pt" }}
+                fontSize="1rem"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
               />

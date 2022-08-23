@@ -463,10 +463,52 @@ const ProfileTabs: React.FC = () => {
             </Flex>
           </TabPanel>
           <TabPanel>
-            <p>two!</p>
+            <Flex
+              flexDir="column"
+              align="center"
+              justify="center"
+              margin="60px 44px"
+            >
+              <Flex border="1px solid" borderColor="black" borderRadius="full">
+                <Image
+                  src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                  alt=""
+                  h="50px"
+                  w="50px"
+                  m="8px"
+                />
+              </Flex>
+              <Text fontWeight="light" fontSize="15pt" mt={3} mb={2}>
+                Saved photos and reels
+              </Text>
+              <Text fontSize="10pt" color="black" textAlign="center">
+                {`When photos/reels that you saved, they'll appear here.`}
+              </Text>
+            </Flex>
           </TabPanel>
           <TabPanel>
-            <p>three!</p>
+            <Flex
+              flexDir="column"
+              align="center"
+              justify="center"
+              margin="60px 44px"
+            >
+              <Flex border="1px solid" borderColor="black" borderRadius="full">
+                <Image
+                  src="https://static.thenounproject.com/png/771247-200.png"
+                  alt=""
+                  h="50px"
+                  w="50px"
+                  m="8px"
+                />
+              </Flex>
+              <Text fontWeight="light" fontSize="15pt" mt={3} mb={2}>
+                Photos of you
+              </Text>
+              <Text fontSize="10pt" color="black" textAlign="center">
+                {`When people tag you in photos, they'll appear here.`}
+              </Text>
+            </Flex>
           </TabPanel>
         </TabPanels>
       </Tabs>
