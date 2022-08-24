@@ -13,10 +13,14 @@ import {
   Flex,
   Image,
   Textarea,
+  Avatar,
+  Input,
+  CloseButton,
 } from "@chakra-ui/react";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
 import useSelectedFile from "../../hooks/useSelectedFile";
+import useUserData from "../../hooks/useUserData";
 import DiscardModal from "./DiscardModal";
 
 type PostUploadModalProps = {
@@ -26,6 +30,8 @@ type PostUploadModalProps = {
 const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { onSelectFile, selectedFile, setSelectedFile } = useSelectedFile();
+  const { userStateValue, loading } = useUserData();
+  const userData = userStateValue?.userData;
   const selectedFileRef = useRef<HTMLInputElement>(null);
   const [nextStep, setNextStep] = useState(0);
 
@@ -50,25 +56,33 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-        size={{ sm: "xs", base: "sm", md: nextStep === 0 ? "lg" : "full" }}
+        size={{ base: "full", md: nextStep === 0 ? "lg" : "full" }}
       >
-        <ModalOverlay />
+        <ModalOverlay bg={{ base: "white", md: "rgba(0,0,0,0.4)" }} />
         <ModalContent
           borderRadius="xl"
           outline="none"
-          margin={{ md: nextStep === 1 ? "90px 120px" : "" }}
+          margin={{ md: nextStep === 1 ? "90px 270px" : "" }}
+          boxShadow={{
+            base: "none",
+            md: `0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px
+          -2px rgba(0, 0, 0, 0.05)`,
+          }}
         >
           {!selectedFile ? (
             <>
-              <Text
-                fontWeight={600}
+              <Flex
+                align="center"
+                justify="center"
                 borderBottom="1px solid"
                 borderColor="gray.200"
-                textAlign="center"
                 p="10px 0px"
               >
-                Create new post
-              </Text>
+                <Text fontWeight={600} textAlign="center">
+                  Create new post
+                </Text>
+                <CloseButton position="absolute" right={3} onClick={onClose} />
+              </Flex>
               <Flex
                 flexDir="column"
                 height="60vh"
@@ -177,14 +191,20 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
 
                   <Flex
                     flexDir="column"
-                    h="60vh"
+                    minH={{ base: "auto", md: "60vh" }}
                     align="center"
                     justify="center"
                   >
-                    <Image src={selectedFile} alt="" />
+                    <Image src={selectedFile} alt="" maxH="60vh" />
                   </Flex>
 
-                  <ModalFooter justifyContent="space-between">
+                  <ModalFooter
+                    justifyContent="space-between"
+                    p="16px"
+                    pos="absolute"
+                    w="100%"
+                    bottom={0}
+                  >
                     <Flex>
                       <Box
                         bg="rgba(26, 26, 26, .8)"
@@ -192,7 +212,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                         borderRadius="full"
                         cursor="pointer"
                         _hover={{ opacity: 0.8 }}
-                        mr={4}
+                        mr={3}
                       >
                         <svg
                           aria-label="Select crop"
@@ -306,26 +326,141 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                     </Text>
                   </Flex>
 
-                  <Flex
-                    flexDir={{ base: "column", md: "row" }}
-                    height="60vh"
-                    align="center"
-                    justify="center"
-                  >
+                  <Flex flexDir={{ base: "column", md: "row" }} height="70vh">
                     <Flex
                       flexDir="column"
-                      minH="60vh"
+                      minH={{ base: "auto", md: "60vh" }}
+                      h={{ base: "400px", md: "100%" }}
                       align="center"
                       justify="center"
-                      border="1px solid"
+                      borderRight="1px solid"
                       borderColor="gray.200"
                       w="100%"
-                      flex="0 0 50%"
+                      flex="0 0 60%"
                     >
-                      <Image src={selectedFile} alt="" />
+                      <Image src={selectedFile} alt="" maxH="60vh" />
                     </Flex>
-                    <Flex flexDir="column" w="100%" flex="0 0 50%">
-                      <Textarea placeholder="Write a caption" />
+
+                    <Flex flexDir="column" w="100%" flex="0 0 40%">
+                      <Flex align="center" margin="18px 16px 14px 16px">
+                        <Avatar src={userData.imageURL} size="sm" mr={3} />
+                        <Text fontWeight={600}>{userData.username}</Text>
+                      </Flex>
+                      <Textarea
+                        placeholder="Write a caption..."
+                        border="none"
+                        borderColor="none"
+                        focusBorderColor="none"
+                        _placeholder={{ color: "grey" }}
+                        fontSize={{ base: "10pt", md: "11.5pt" }}
+                        h="150px"
+                        resize="none"
+                      />
+                      <Flex
+                        align="center"
+                        justify="space-between"
+                        p="12px"
+                        mt={2}
+                        borderBottom="1px solid"
+                        borderColor="gray.200"
+                      >
+                        <svg
+                          aria-label="Emoji"
+                          color="#8e8e8e"
+                          fill="#8e8e8e"
+                          height="20"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="20"
+                          cursor="pointer"
+                        >
+                          <path d="M15.83 10.997a1.167 1.167 0 101.167 1.167 1.167 1.167 0 00-1.167-1.167zm-6.5 1.167a1.167 1.167 0 10-1.166 1.167 1.167 1.167 0 001.166-1.167zm5.163 3.24a3.406 3.406 0 01-4.982.007 1 1 0 10-1.557 1.256 5.397 5.397 0 008.09 0 1 1 0 00-1.55-1.263zM12 .503a11.5 11.5 0 1011.5 11.5A11.513 11.513 0 0012 .503zm0 21a9.5 9.5 0 119.5-9.5 9.51 9.51 0 01-9.5 9.5z"></path>
+                        </svg>
+                        <Text
+                          fontSize="9pt"
+                          color="#c7c7c7"
+                          cursor="pointer"
+                          _hover={{ color: "#262626" }}
+                        >
+                          6/2,200
+                        </Text>
+                      </Flex>
+
+                      <Flex
+                        align="center"
+                        justify="space-between"
+                        borderBottom="1px solid"
+                        borderColor="gray.200"
+                        pr="12px"
+                        display={{ base: "none", md: "flex" }}
+                      >
+                        <Input
+                          focusBorderColor="none"
+                          placeholder="Add location"
+                          border="none"
+                          fontSize="11.5pt"
+                        />
+                        <svg
+                          aria-label="Add location"
+                          color="#8e8e8e"
+                          fill="#8e8e8e"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          cursor="pointer"
+                        >
+                          <path d="M12.053 8.105a1.604 1.604 0 101.604 1.604 1.604 1.604 0 00-1.604-1.604zm0-7.105a8.684 8.684 0 00-8.708 8.66c0 5.699 6.14 11.495 8.108 13.123a.939.939 0 001.2 0c1.969-1.628 8.109-7.424 8.109-13.123A8.684 8.684 0 0012.053 1zm0 19.662C9.29 18.198 5.345 13.645 5.345 9.66a6.709 6.709 0 0113.417 0c0 3.985-3.944 8.538-6.709 11.002z"></path>
+                        </svg>
+                      </Flex>
+
+                      <Flex
+                        align="center"
+                        justify="space-between"
+                        p="12px"
+                        mt={2}
+                        borderBottom="1px solid"
+                        borderColor="gray.200"
+                        display={{ base: "none", md: "flex" }}
+                      >
+                        <Text fontSize="11.5pt">Accessibility</Text>
+                        <svg
+                          aria-label="Down chevron icon"
+                          color="#262626"
+                          fill="#262626"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          cursor="pointer"
+                        >
+                          <path d="M21 17.502a.997.997 0 01-.707-.293L12 8.913l-8.293 8.296a1 1 0 11-1.414-1.414l9-9.004a1.03 1.03 0 011.414 0l9 9.004A1 1 0 0121 17.502z"></path>
+                        </svg>
+                      </Flex>
+
+                      <Flex
+                        align="center"
+                        justify="space-between"
+                        p="12px"
+                        mt={2}
+                        borderBottom="1px solid"
+                        borderColor="gray.200"
+                        display={{ base: "none", md: "flex" }}
+                      >
+                        <Text fontSize="11.5pt">Advanced settings</Text>
+                        <svg
+                          aria-label="Down chevron icon"
+                          color="#262626"
+                          fill="#262626"
+                          height="16"
+                          role="img"
+                          viewBox="0 0 24 24"
+                          width="16"
+                          cursor="pointer"
+                        >
+                          <path d="M21 17.502a.997.997 0 01-.707-.293L12 8.913l-8.293 8.296a1 1 0 11-1.414-1.414l9-9.004a1.03 1.03 0 011.414 0l9 9.004A1 1 0 0121 17.502z"></path>
+                        </svg>
+                      </Flex>
                     </Flex>
                   </Flex>
                 </>

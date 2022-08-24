@@ -27,6 +27,7 @@ export const Button: ComponentStyleConfig = {
       },
     },
     outline: {
+      padding: "15px 0px",
       color: "#0095f6",
       cursor: "pointer",
     },

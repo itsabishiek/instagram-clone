@@ -91,7 +91,7 @@ const SignupPage = () => {
           direction="column"
         >
           <Stack
-            bg="white"
+            bg={{ base: "none", md: "white" }}
             width="100%"
             border={{ base: "none", md: "1px solid" }}
             borderColor={{ base: "none", md: "gray.200" }}
@@ -227,7 +227,7 @@ const SignupPage = () => {
 
           <Flex
             mt={2}
-            bg="white"
+            bg={{ base: "none", md: "white" }}
             width="100%"
             border="1px solid"
             borderColor="gray.200"

@@ -64,10 +64,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           direction="column"
         >
           <Stack
-            bg="white"
+            bg={{ base: "none", md: "white" }}
             width="100%"
-            border="1px solid"
-            borderColor="gray.200"
+            border={{ base: "none", md: "1px solid" }}
+            borderColor={{ base: "none", md: "gray.200" }}
           >
             <Flex justify="center" width="100%">
               <Image
@@ -157,10 +157,10 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
           <Flex
             mt={2}
-            bg="white"
+            bg={{ base: "none", md: "white" }}
             width="100%"
-            border="1px solid"
-            borderColor="gray.200"
+            border={{ base: "none", md: "1px solid" }}
+            borderColor={{ base: "none", md: "gray.200" }}
             justify="center"
             p="20px 0px"
           >

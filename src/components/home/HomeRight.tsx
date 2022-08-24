@@ -11,12 +11,13 @@ const HomeRight: React.FC<HomeRightProps> = () => {
 
   return (
     <>
-      <Flex w="100%" align="center" justifyContent="space-between">
+      <Flex w="100%" align="center" justifyContent="space-between" mt={4}>
         <Flex align="center">
           <Link href={`/${userData.username}`}>
             <Avatar
               src={userData?.imageURL}
-              size="lg"
+              w="56px"
+              h="56px"
               mr={4}
               cursor="pointer"
             />
@@ -44,7 +45,7 @@ const HomeRight: React.FC<HomeRightProps> = () => {
 
       <Stack w="100%" mt={4}>
         <Flex align="center" justify="space-between">
-          <Text fontSize="11pt" fontWeight={600} color="gray.500">
+          <Text fontSize="11pt" fontWeight={600} color="#8e8e8e">
             Suggestions for you
           </Text>
           <Text fontSize="9pt" fontWeight={600} color="black" cursor="pointer">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { RecoilRoot } from "recoil";
 import { theme } from "../chakra/theme";
 import Layout from "../components/layout/Layout";
+import "../../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [showChild, setShowChild] = useState(false);

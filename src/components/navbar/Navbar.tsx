@@ -71,12 +71,18 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
           ) : (
             <>
               <Link href="/login">
-                <Button h="30px" mr={2} mt={1}>
+                <Button h="30px" mr={3} mt={1}>
                   Log In
                 </Button>
               </Link>
               <Link href="/signup">
-                <Button h="30px" variant="outline" mt={1}>
+                <Button
+                  h="30px"
+                  variant="outline"
+                  mt={1}
+                  border="none"
+                  _hover={{ bg: "none" }}
+                >
                   Sign Up
                 </Button>
               </Link>
