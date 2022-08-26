@@ -1,5 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
+import { Post } from "./postsAtom";
 
 export type UserData = {
   id: string;
@@ -18,10 +19,12 @@ export type UserData = {
 
 interface UserState {
   userData: UserData;
+  posts: Post[];
 }
 
-const defaultUserDataState = {
+const defaultUserDataState: UserState = {
   userData: {} as UserData,
+  posts: [],
 };
 
 export const userDataState = atom<UserState>({

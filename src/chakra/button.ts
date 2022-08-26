@@ -34,5 +34,9 @@ export const Button: ComponentStyleConfig = {
     uploadButton: {
       color: "inherit",
     },
+    shareButton: {
+      color: "inherit",
+      p: 0,
+    },
   },
 };

@@ -17,8 +17,21 @@ import {
   Input,
   CloseButton,
 } from "@chakra-ui/react";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  Timestamp,
+  writeBatch,
+} from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { Post, postState } from "../../atoms/postsAtom";
+import { userDataState } from "../../atoms/userDataAtom";
+import { firestore, storage } from "../../firebase/clientApp";
 import useSelectedFile from "../../hooks/useSelectedFile";
 import useUserData from "../../hooks/useUserData";
 import DiscardModal from "./DiscardModal";
@@ -28,14 +41,72 @@ type PostUploadModalProps = {
 };
 
 const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
+  const setPostStateValue = useSetRecoilState(postState);
+  const setUserStateValue = useSetRecoilState(userDataState);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { onSelectFile, selectedFile, setSelectedFile } = useSelectedFile();
   const { userStateValue, loading } = useUserData();
   const userData = userStateValue?.userData;
   const selectedFileRef = useRef<HTMLInputElement>(null);
   const [nextStep, setNextStep] = useState(0);
+  const [caption, setCaption] = useState("");
+  const [creatingPost, setCreatingPost] = useState(false);
 
-  console.log(nextStep);
+  const handleCreatePost = async () => {
+    setCreatingPost(true);
+    try {
+      const batch = writeBatch(firestore);
+
+      const newData = {
+        userId: userData.id,
+        name: userData.fullname,
+        username: userData.username,
+        profileImg: userData.imageURL || "",
+        caption: caption || "",
+        numberOfComments: 0,
+        numberOfLikes: 0,
+        createdAt: serverTimestamp() as Timestamp,
+      };
+
+      const postDocRef = doc(collection(firestore, "posts"));
+      const userPostDocRef = doc(
+        collection(firestore, `/users/${userData.uid}/posts`)
+      );
+
+      batch.set(postDocRef, newData);
+      batch.set(userPostDocRef, newData);
+
+      if (selectedFile) {
+        const imageRef = ref(storage, `posts/${userPostDocRef.id}/image`);
+        await uploadString(imageRef, selectedFile, "data_url");
+        const downloadURL = await getDownloadURL(imageRef);
+
+        batch.update(postDocRef, {
+          imageURL: downloadURL,
+        });
+        batch.update(userPostDocRef, {
+          imageURL: downloadURL,
+        });
+      }
+
+      await batch.commit();
+
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: [...prev.posts, newData] as Post[],
+      }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        posts: [...prev.posts, newData] as Post[],
+      }));
+
+      onClose();
+    } catch (error) {
+      console.log("handleCreatePost Error", error);
+    }
+    setCreatingPost(false);
+  };
 
   return (
     <>
@@ -279,7 +350,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                     justifyContent="space-between"
                     borderBottom="1px solid"
                     borderColor="gray.200"
-                    p="10px 14px"
+                    p="10px 16px"
                     zIndex={3}
                     bg="white"
                   >
@@ -316,14 +387,16 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                       </svg>
                     </Box>
                     <Text fontWeight={600}>Create new post</Text>
-                    <Text
+                    <Button
                       fontSize="11pt"
                       color="brand.100"
                       fontWeight={600}
-                      cursor="pointer"
+                      variant="shareButton"
+                      isLoading={creatingPost}
+                      onClick={handleCreatePost}
                     >
                       Share
-                    </Text>
+                    </Button>
                   </Flex>
 
                   <Flex flexDir={{ base: "column", md: "row" }} height="70vh">
@@ -355,6 +428,8 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                         fontSize={{ base: "10pt", md: "11.5pt" }}
                         h="150px"
                         resize="none"
+                        value={caption}
+                        onChange={(e) => setCaption(e.target.value)}
                       />
                       <Flex
                         align="center"

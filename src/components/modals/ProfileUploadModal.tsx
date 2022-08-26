@@ -19,6 +19,8 @@ import {
 import { doc, updateDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import React, { useRef, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { postState } from "../../atoms/postsAtom";
 import { UserData } from "../../atoms/userDataAtom";
 import { firestore, storage } from "../../firebase/clientApp";
 import useSelectedFile from "../../hooks/useSelectedFile";
@@ -35,6 +37,7 @@ const ProfileUploadModal: React.FC<ProfileUploadModalProps> = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { setUserStateValue } = useUserData();
+  const setPostStateValue = useSetRecoilState(postState);
   const { onSelectFile, selectedFile, setSelectedFile } = useSelectedFile();
   const selectedFileRef = useRef<HTMLInputElement>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -49,12 +52,30 @@ const ProfileUploadModal: React.FC<ProfileUploadModalProps> = ({
       await updateDoc(doc(firestore, "users", userData.id), {
         imageURL: downloadURL,
       });
+      await updateDoc(doc(firestore, `users/${userData.uid}/posts`), {
+        profileImg: downloadURL,
+      });
+      await updateDoc(doc(firestore, "posts"), {
+        profileImg: downloadURL,
+      });
 
       setUserStateValue((prev) => ({
         ...prev,
         userData: {
           ...prev.userData,
           imageURL: downloadURL,
+        },
+        posts: {
+          ...prev.posts,
+          profileImg: downloadURL,
+        },
+      }));
+
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: {
+          ...prev.posts,
+          profileImg: downloadURL,
         },
       }));
     } catch (error) {

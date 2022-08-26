@@ -1,11 +1,16 @@
 import { Text } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useAuthState } from "react-firebase-hooks/auth";
 import HomeLeft from "../components/home/HomeLeft";
 import HomeRight from "../components/home/HomeRight";
 import PageContent from "../components/layout/PageContent";
+import Posts from "../components/post/Posts";
+import { auth } from "../firebase/clientApp";
 
 const Home: NextPage = () => {
+  const [user] = useAuthState(auth);
+
   return (
     <div>
       <Head>
@@ -19,11 +24,10 @@ const Home: NextPage = () => {
 
       <PageContent>
         <>
-          <HomeLeft />
+          <HomeLeft user={user} />
+          <Posts />
         </>
-        <>
-          <HomeRight />
-        </>
+        <>{user && <HomeRight />}</>
       </PageContent>
     </div>
   );

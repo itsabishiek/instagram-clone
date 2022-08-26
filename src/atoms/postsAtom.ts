@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore";
 
 export type Post = {
   id: string;
-  uid: string;
+  userId: string;
   name: string;
   username: string;
   profileImg: string;
