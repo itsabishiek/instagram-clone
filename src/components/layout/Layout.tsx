@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import React from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -20,7 +21,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       )}
       <main>{children}</main>
       {!(router.pathname === "/login" || router.pathname === "/signup") && (
-        <BottomNavbar user={user} />
+        <Box mt="40px">
+          <BottomNavbar user={user} />
+        </Box>
       )}
     </>
   );

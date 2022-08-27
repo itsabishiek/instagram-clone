@@ -1,6 +1,12 @@
 import { Button, Image, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import router from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
@@ -18,15 +24,22 @@ const OAuthButtons: React.FC<OAuthButtonsProps> = ({ login }) => {
   const createUserDocument = async (user: User) => {
     setLoading(true);
     try {
-      await addDoc(collection(firestore, "users"), {
-        uid: user.uid,
-        fullname: user.displayName,
-        username: user.displayName?.toLowerCase().split(" ")[0],
-        email: user.email,
-        follower: 0,
-        following: 0,
-        createdAt: serverTimestamp(),
-      });
+      await setDoc(
+        doc(
+          firestore,
+          "/users",
+          user.displayName?.toLowerCase().split(" ")[0]!
+        ),
+        {
+          uid: user.uid,
+          fullname: user.displayName,
+          username: user.displayName?.toLowerCase().split(" ")[0],
+          email: user.email,
+          follower: 0,
+          following: 0,
+          createdAt: serverTimestamp(),
+        }
+      );
       router.push("/");
     } catch (error) {
       console.log("createUserDocument Error", error);

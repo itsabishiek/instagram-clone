@@ -1,8 +1,12 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import React from "react";
-import { useRecoilValue } from "recoil";
-import { postState } from "../../atoms/postsAtom";
+import { query, collection, orderBy, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { Post, postState } from "../../atoms/postsAtom";
+import { firestore } from "../../firebase/clientApp";
+import PostItem from "../post/PostItem";
+import PostLoader from "../loader/PostLoader";
 import Stories from "../Stories";
 
 type HomeLeftProps = {
@@ -10,15 +14,47 @@ type HomeLeftProps = {
 };
 
 const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
-  const postStateValue = useRecoilValue(postState);
+  const [postStateValue, setPostStateValue] = useRecoilState(postState);
+  const [loading, setLoading] = useState(false);
+
+  const getPosts = async () => {
+    setLoading(true);
+    try {
+      const postsQuery = query(
+        collection(firestore, "posts"),
+        orderBy("createdAt", "desc")
+      );
+      const postDocs = await getDocs(postsQuery);
+      const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: posts as Post[],
+      }));
+    } catch (error) {
+      console.log("getPosts Error", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
 
   console.log(postStateValue);
 
   return (
-    <Flex>
+    <Stack maxW="470px">
       {user && <Stories />}
-      <></>
-    </Flex>
+
+      <Stack mt="0rem !important">
+        {postStateValue.posts.map((post) => (
+          <>
+            {loading ? <PostLoader /> : <PostItem key={post.id} post={post} />}
+          </>
+        ))}
+      </Stack>
+    </Stack>
   );
 };
 export default HomeLeft;

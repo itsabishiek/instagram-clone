@@ -11,8 +11,8 @@ import {
 import { signOut } from "firebase/auth";
 import Link from "next/link";
 import React from "react";
-import { auth } from "../firebase/clientApp";
-import useUserData from "../hooks/useUserData";
+import { auth } from "../../firebase/clientApp";
+import useUserData from "../../hooks/useUserData";
 
 type UserMenuProps = {
   children: React.ReactNode;

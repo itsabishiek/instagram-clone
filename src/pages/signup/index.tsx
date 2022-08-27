@@ -8,7 +8,13 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -50,7 +56,7 @@ const SignupPage = () => {
   const createUserDocument = async (user: User) => {
     setLoading(true);
     try {
-      await addDoc(collection(firestore, "users"), {
+      await setDoc(doc(firestore, "/users", signupForm.username), {
         uid: user.uid,
         fullname: signupForm.fullname,
         username: signupForm.username,

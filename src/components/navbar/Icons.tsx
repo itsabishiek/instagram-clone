@@ -1,7 +1,7 @@
 import { Avatar, Box, Flex, Link } from "@chakra-ui/react";
 import React from "react";
 import useUserData from "../../hooks/useUserData";
-import UserMenu from "../../menus/UserMenu";
+import UserMenu from "../menus/UserMenu";
 import PostUploadModal from "../modals/PostUploadModal";
 
 const Icons: React.FC = () => {

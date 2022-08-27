@@ -51,6 +51,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
   const selectedFileRef = useRef<HTMLInputElement>(null);
   const [nextStep, setNextStep] = useState(0);
   const [caption, setCaption] = useState("");
+  const [location, setLocation] = useState("");
   const [creatingPost, setCreatingPost] = useState(false);
 
   const handleCreatePost = async () => {
@@ -59,11 +60,12 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
       const batch = writeBatch(firestore);
 
       const newData = {
-        userId: userData.id,
+        userId: userData.uid,
         name: userData.fullname,
         username: userData.username,
         profileImg: userData.imageURL || "",
         caption: caption || "",
+        location: location || "",
         numberOfComments: 0,
         numberOfLikes: 0,
         createdAt: serverTimestamp() as Timestamp,
@@ -71,7 +73,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
 
       const postDocRef = doc(collection(firestore, "posts"));
       const userPostDocRef = doc(
-        collection(firestore, `/users/${userData.uid}/posts`)
+        collection(firestore, `/users/${userData.username}/posts`)
       );
 
       batch.set(postDocRef, newData);
@@ -94,11 +96,11 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
 
       setPostStateValue((prev) => ({
         ...prev,
-        posts: [...prev.posts, newData] as Post[],
+        posts: [newData, ...prev.posts] as Post[],
       }));
       setUserStateValue((prev) => ({
         ...prev,
-        posts: [...prev.posts, newData] as Post[],
+        posts: [newData, ...prev.posts] as Post[],
       }));
 
       onClose();
@@ -474,6 +476,8 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                           placeholder="Add location"
                           border="none"
                           fontSize="11.5pt"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
                         />
                         <svg
                           aria-label="Add location"

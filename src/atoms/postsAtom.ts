@@ -8,6 +8,7 @@ export type Post = {
   username: string;
   profileImg: string;
   caption: string;
+  location: string;
   numberOfComments: number;
   numberOfLikes: number;
   imageURL: string;

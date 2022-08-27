@@ -2,14 +2,15 @@ import { Avatar, Box, Link, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
 import useUserData from "../../hooks/useUserData";
-import UserMenu from "../../menus/UserMenu";
+import UserMenu from "../menus/UserMenu";
 import PostUploadModal from "../modals/PostUploadModal";
+import { BiLogIn } from "react-icons/bi";
 
 type BottomNavbarProps = {
   user?: User | null;
 };
 
-const BottomNavbar: React.FC<BottomNavbarProps> = () => {
+const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
   const { userStateValue, loading } = useUserData();
   const userData = userStateValue?.userData;
 
@@ -150,9 +151,15 @@ const BottomNavbar: React.FC<BottomNavbarProps> = () => {
         </Tab>
 
         <Tab>
-          <UserMenu>
-            <Avatar src={userData?.imageURL} size="xs" />
-          </UserMenu>
+          {user ? (
+            <UserMenu>
+              <Avatar src={userData?.imageURL} size="xs" />
+            </UserMenu>
+          ) : (
+            <Link href="/login">
+              <BiLogIn fontSize="28px" color="#262626" />
+            </Link>
+          )}
         </Tab>
       </TabList>
     </Tabs>

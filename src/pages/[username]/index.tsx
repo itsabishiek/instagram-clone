@@ -1,40 +1,35 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Flex,
-  Image,
-  Spinner,
-  Stack,
-  Text,
-} from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
+import { doc, getDoc } from "firebase/firestore";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSetRecoilState } from "recoil";
+import safeJsonStringify from "safe-json-stringify";
+import { UserData, userDataState } from "../../atoms/userDataAtom";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
-import useUserData from "../../hooks/useUserData";
+import { firestore } from "../../firebase/clientApp";
 
-type ProfilePageProps = {};
+type ProfilePageProps = {
+  userData: UserData;
+};
 
-const ProfilePage: React.FC<ProfilePageProps> = () => {
-  const { userStateValue, loading } = useUserData();
-  const userData = userStateValue?.userData;
+const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
+  const setUserStateValue = useSetRecoilState(userDataState);
+
+  useEffect(() => {
+    setUserStateValue((prev) => ({
+      ...prev,
+      userData: userData,
+    }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData]);
+
+  if (!userData) {
+    return <Flex>Oops! there is no such username!</Flex>;
+  }
 
   // console.log(userData);
-
-  if (loading) {
-    return (
-      <Flex h="calc(80vh - 60px)" justify="center" align="center">
-        <Spinner
-          thickness="4px"
-          speed="0.65s"
-          emptyColor="gray.200"
-          color="brand.100"
-          size="lg"
-        />
-      </Flex>
-    );
-  }
 
   return (
     <>
@@ -247,3 +242,24 @@ const ProfilePage: React.FC<ProfilePageProps> = () => {
   );
 };
 export default ProfilePage;
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
+  try {
+    const userDocRef = doc(
+      firestore,
+      "users",
+      context.query.username as string
+    );
+    const userDoc = await getDoc(userDocRef);
+
+    return {
+      props: {
+        userData: userDoc.exists()
+          ? JSON.parse(safeJsonStringify({ id: userDoc.id, ...userDoc.data() }))
+          : "",
+      },
+    };
+  } catch (error) {
+    console.log("getServerSideProps Error", error);
+  }
+}
