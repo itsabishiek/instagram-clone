@@ -20,11 +20,13 @@ export type UserData = {
 interface UserState {
   userData: UserData;
   posts: Post[];
+  postsFetched: boolean;
 }
 
 const defaultUserDataState: UserState = {
   userData: {} as UserData,
   posts: [],
+  postsFetched: false,
 };
 
 export const userDataState = atom<UserState>({

@@ -73,7 +73,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
 
       const postDocRef = doc(collection(firestore, "posts"));
       const userPostDocRef = doc(
-        collection(firestore, `/users/${userData.username}/posts`)
+        collection(firestore, `users/${userData.username}/posts`)
       );
 
       batch.set(postDocRef, newData);
@@ -135,7 +135,10 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
         <ModalContent
           borderRadius="xl"
           outline="none"
-          margin={{ md: nextStep === 1 ? "90px 270px" : "" }}
+          margin={{
+            md: nextStep === 1 ? "90px 130px" : "",
+            lg: nextStep === 1 ? "90px 250px" : "",
+          }}
           boxShadow={{
             base: "none",
             md: `0 10px 15px -3px rgba(0, 0, 0, 0.1),0 4px 6px

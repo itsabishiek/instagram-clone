@@ -44,7 +44,7 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
   console.log(postStateValue);
 
   return (
-    <Stack maxW="470px">
+    <Stack w={{ base: "100%", md: "470px" }}>
       {user && <Stories />}
 
       <Stack mt="0rem !important">
@@ -57,4 +57,5 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
     </Stack>
   );
 };
+
 export default HomeLeft;

@@ -1,11 +1,27 @@
-import { Avatar, Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  Avatar,
+  Box,
+  Button,
+  Center,
+  Flex,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+} from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import React, { useEffect } from "react";
-import { useSetRecoilState } from "recoil";
+import React, { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
+import { Post, postState } from "../../atoms/postsAtom";
 import { UserData, userDataState } from "../../atoms/userDataAtom";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
 import { firestore } from "../../firebase/clientApp";
@@ -15,13 +31,40 @@ type ProfilePageProps = {
 };
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
-  const setUserStateValue = useSetRecoilState(userDataState);
+  const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
+  const [loading, setLoading] = useState(false);
+
+  console.log(userStateValue);
+
+  const getUserPosts = async () => {
+    setLoading(true);
+    try {
+      const userPostsQuery = query(
+        collection(firestore, `users/${userData.username}/posts`),
+        orderBy("createdAt", "desc")
+      );
+      const userPostsDocs = await getDocs(userPostsQuery);
+      const posts = userPostsDocs.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        posts: posts as Post[],
+        postsFetched: true,
+      }));
+    } catch (error) {
+      console.log("getUserPosts Error", error);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     setUserStateValue((prev) => ({
       ...prev,
       userData: userData,
     }));
+    getUserPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
@@ -44,14 +87,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
         />
       </Head>
 
-      <Box
-        flexGrow={1}
-        m="0px auto 30px"
-        maxW="935px"
-        p="30px 20px 0px"
-        pb="40px"
-      >
-        <Flex flexDirection={{ base: "column", md: "row" }}>
+      <Box flexGrow={1} m="0px auto 30px" maxW="935px" pb="40px">
+        <Flex flexDirection={{ base: "column", md: "row" }} p="30px 20px 0px">
           <Flex
             mr="30px"
             flexGrow={{ base: 0, md: 1 }}
@@ -60,12 +97,24 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
             justify={{ base: "unset", md: "center" }}
             mb={{ base: 3, md: 0 }}
           >
-            <Avatar
-              src={userData?.imageURL}
-              w={{ base: "77px", md: "140px" }}
-              h={{ base: "77px", md: "140px" }}
-              bg="gray.200"
-            />
+            <Center
+              w={{ base: "80px", md: "156px" }}
+              h={{ base: "80px", md: "156px" }}
+              border="1px solid"
+              borderColor="#cecece"
+              borderRadius="50%"
+            >
+              <Avatar
+                src={userData?.imageURL}
+                w={{ base: "77px", md: "150px" }}
+                h={{ base: "77px", md: "150px" }}
+                bg="gray.200"
+                border={{
+                  base: "3px solid rgb(250, 250, 250)",
+                  md: "6px solid rgb(250, 250, 250)",
+                }}
+              />
+            </Center>
 
             <Stack
               align="left"
@@ -236,7 +285,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
           </Stack>
         </Flex>
 
-        <ProfileTabs />
+        <ProfileTabs
+          posts={userStateValue.posts}
+          postsFetched={userStateValue.postsFetched}
+        />
       </Box>
     </>
   );

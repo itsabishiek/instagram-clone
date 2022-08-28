@@ -61,7 +61,7 @@ const SignupPage = () => {
         fullname: signupForm.fullname,
         username: signupForm.username,
         email: user.email,
-        follower: 0,
+        followers: 0,
         following: 0,
         createdAt: serverTimestamp(),
       });

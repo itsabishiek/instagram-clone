@@ -53,22 +53,29 @@ const HomeRight: React.FC<HomeRightProps> = () => {
   useEffect(() => {
     suggestionUsers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [user]);
 
-  console.log(suggestions);
+  // console.log(suggestions);
 
   return (
     <Box pos="sticky" top="90px" w="100%">
       <Flex w="100%" align="center" justifyContent="space-between" mt={4}>
         <Flex align="center">
           <Link href={`/${userData.username}`}>
-            <Avatar
-              src={userData?.imageURL}
-              w="56px"
-              h="56px"
+            <Box
+              border="1px solid"
+              borderColor="#c5c5c5"
               mr={4}
-              cursor="pointer"
-            />
+              borderRadius="full"
+            >
+              <Avatar
+                src={userData?.imageURL}
+                w="56px"
+                h="56px"
+                cursor="pointer"
+                border="3px solid rgb(250, 250, 250)"
+              />
+            </Box>
           </Link>
           <Flex flexDir="column">
             <Link href={`/${userData.username}`}>

@@ -8,10 +8,22 @@ import {
   Image,
   Stack,
   Flex,
+  Box,
+  Grid,
+  GridItem,
+  Spinner,
+  Icon,
 } from "@chakra-ui/react";
 import React from "react";
+import { Post } from "../../atoms/postsAtom";
+import { BsFillChatFill, BsHeartFill, BsPlayFill } from "react-icons/bs";
 
-const ProfileTabs: React.FC = () => {
+type ProfileTabsProps = {
+  posts: Post[];
+  postsFetched: boolean;
+};
+
+const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
   return (
     <>
       <Tabs
@@ -186,43 +198,106 @@ const ProfileTabs: React.FC = () => {
         </TabList>
 
         <TabPanels>
-          <TabPanel>
-            <Flex
-              w="100%"
-              mt={3}
-              flexDir={{ base: "column-reverse", md: "row" }}
-            >
-              <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
-
-              <Stack
+          <TabPanel p={0}>
+            {posts.length === 0 ? (
+              <Flex
                 w="100%"
-                h={{ md: "380px" }}
-                align="center"
-                justify="center"
-                p={{ base: "40px 0px" }}
-                textAlign="center"
+                mt={3}
+                flexDir={{ base: "column-reverse", md: "row" }}
               >
-                <Text fontWeight={700} fontSize={{ base: "11pt" }}>
-                  Start capturing and sharing your moments.
-                </Text>
-                <Text fontSize="10pt">
-                  Get the app to share your first photo or video.
-                </Text>
-                <Flex justify="center" pt={2}>
-                  <Image
-                    src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
-                    alt=""
-                    w="136px"
-                    mr={2}
-                  />
-                  <Image
-                    src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
-                    alt=""
-                    w="136px"
-                  />
-                </Flex>
-              </Stack>
-            </Flex>
+                <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
+
+                <Stack
+                  w="100%"
+                  h={{ md: "380px" }}
+                  align="center"
+                  justify="center"
+                  p={{ base: "40px 0px" }}
+                  textAlign="center"
+                >
+                  <Text fontWeight={700} fontSize={{ base: "11pt" }}>
+                    Start capturing and sharing your moments.
+                  </Text>
+                  <Text fontSize="10pt">
+                    Get the app to share your first photo or video.
+                  </Text>
+                  <Flex justify="center" pt={2}>
+                    <Image
+                      src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
+                      alt=""
+                      w="136px"
+                      mr={2}
+                    />
+                    <Image
+                      src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
+                      alt=""
+                      w="136px"
+                    />
+                  </Flex>
+                </Stack>
+              </Flex>
+            ) : (
+              <>
+                {!postsFetched ? (
+                  <Spinner />
+                ) : (
+                  <Grid templateColumns="repeat(3, 1fr)" gap={6} p="20px 0px">
+                    {posts?.map((post) => (
+                      <GridItem key={post.id}>
+                        <Box
+                          pos="relative"
+                          w="293px"
+                          h="293px"
+                          cursor="pointer"
+                        >
+                          <Box
+                            pos="absolute"
+                            top={0}
+                            left={0}
+                            w="100%"
+                            h="100%"
+                            bg="rgba(0,0,0,0.3)"
+                            opacity={0}
+                            _hover={{ opacity: 1 }}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Flex align="center" mr={6}>
+                              <Icon
+                                as={BsHeartFill}
+                                color="#ffffff"
+                                fontSize="20px"
+                                mr={2}
+                              />
+                              <Text color="#ffffff">{post.numberOfLikes}</Text>
+                            </Flex>
+                            <Flex align="center">
+                              <Icon
+                                as={BsFillChatFill}
+                                color="#ffffff"
+                                fontSize="20px"
+                                mr={2}
+                              />
+                              <Text color="#ffffff">
+                                {post.numberOfComments}
+                              </Text>
+                            </Flex>
+                          </Box>
+                          <Image
+                            src={post.imageURL}
+                            alt=""
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                          />
+                        </Box>
+                      </GridItem>
+                    ))}
+                  </Grid>
+                )}
+              </>
+            )}
           </TabPanel>
           <TabPanel>
             <Flex
@@ -423,44 +498,108 @@ const ProfileTabs: React.FC = () => {
           </Tab>
         </TabList>
 
-        <TabPanels display={{ base: "unset", md: "unset" }}>
-          <TabPanel>
-            <Flex
-              w="100%"
-              mt={3}
-              flexDir={{ base: "column-reverse", md: "row" }}
-            >
-              <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
-
-              <Stack
+        <TabPanels>
+          <TabPanel p={0}>
+            {posts.length === 0 ? (
+              <Flex
                 w="100%"
-                h={{ md: "380px" }}
-                align="center"
-                justify="center"
-                p={{ base: "40px 0px" }}
-                textAlign="center"
+                mt={3}
+                flexDir={{ base: "column-reverse", md: "row" }}
+                p="30px 20px 0px"
               >
-                <Text fontWeight={700} fontSize={{ base: "11pt" }}>
-                  Start capturing and sharing your moments.
-                </Text>
-                <Text fontSize="10pt">
-                  Get the app to share your first photo or video.
-                </Text>
-                <Flex justify="center" pt={2}>
-                  <Image
-                    src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
-                    alt=""
-                    w="136px"
-                    mr={2}
-                  />
-                  <Image
-                    src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
-                    alt=""
-                    w="136px"
-                  />
-                </Flex>
-              </Stack>
-            </Flex>
+                <Image src="/img/mediaUpsell.jpg" alt="" w="380px" h="380px" />
+
+                <Stack
+                  w="100%"
+                  h={{ md: "380px" }}
+                  align="center"
+                  justify="center"
+                  p={{ base: "40px 0px" }}
+                  textAlign="center"
+                >
+                  <Text fontWeight={700} fontSize={{ base: "11pt" }}>
+                    Start capturing and sharing your moments.
+                  </Text>
+                  <Text fontSize="10pt">
+                    Get the app to share your first photo or video.
+                  </Text>
+                  <Flex justify="center" pt={2}>
+                    <Image
+                      src="https://iconape.com/wp-content/png_logo_vector/download-on-the-app-store-flat-badge-logo.png"
+                      alt=""
+                      w="136px"
+                      mr={2}
+                    />
+                    <Image
+                      src="https://iconape.com/wp-content/png_logo_vector/get-it-on-google-play-2016-logo.png"
+                      alt=""
+                      w="136px"
+                    />
+                  </Flex>
+                </Stack>
+              </Flex>
+            ) : (
+              <>
+                {!postsFetched ? (
+                  <Spinner />
+                ) : (
+                  <Grid templateColumns="repeat(3, 1fr)" p="20px 0px">
+                    {posts?.map((post) => (
+                      <GridItem key={post.id}>
+                        <Box
+                          pos="relative"
+                          w="130px"
+                          h="130px"
+                          cursor="pointer"
+                        >
+                          <Box
+                            pos="absolute"
+                            top={0}
+                            left={0}
+                            w="100%"
+                            h="100%"
+                            bg="rgba(0,0,0,0.3)"
+                            opacity={0}
+                            _hover={{ opacity: 1 }}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                          >
+                            <Flex align="center" mr={6}>
+                              <Icon
+                                as={BsHeartFill}
+                                color="#ffffff"
+                                fontSize="20px"
+                                mr={2}
+                              />
+                              <Text color="#ffffff">{post.numberOfLikes}</Text>
+                            </Flex>
+                            <Flex align="center">
+                              <Icon
+                                as={BsFillChatFill}
+                                color="#ffffff"
+                                fontSize="20px"
+                                mr={2}
+                              />
+                              <Text color="#ffffff">
+                                {post.numberOfComments}
+                              </Text>
+                            </Flex>
+                          </Box>
+                          <Image
+                            src={post.imageURL}
+                            alt=""
+                            w="100%"
+                            h="100%"
+                            objectFit="cover"
+                          />
+                        </Box>
+                      </GridItem>
+                    ))}
+                  </Grid>
+                )}
+              </>
+            )}
           </TabPanel>
           <TabPanel>
             <Flex
