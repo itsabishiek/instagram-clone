@@ -256,7 +256,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                             left={0}
                             w="100%"
                             h="100%"
-                            bg="rgba(0,0,0,0.3)"
+                            bg="rgba(0,0,0,0.4)"
                             opacity={0}
                             _hover={{ opacity: 1 }}
                             display="flex"
@@ -543,7 +543,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                 {!postsFetched ? (
                   <Spinner />
                 ) : (
-                  <Grid templateColumns="repeat(3, 1fr)" p="20px 0px">
+                  <Grid templateColumns="repeat(3, 1fr)" p="0px">
                     {posts?.map((post) => (
                       <GridItem key={post.id}>
                         <Box
@@ -558,7 +558,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                             left={0}
                             w="100%"
                             h="100%"
-                            bg="rgba(0,0,0,0.3)"
+                            bg="rgba(0,0,0,0.4)"
                             opacity={0}
                             _hover={{ opacity: 1 }}
                             display="flex"

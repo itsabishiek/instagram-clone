@@ -17,10 +17,12 @@ export type Post = {
 
 interface PostState {
   posts: Post[];
+  postDeleted: boolean;
 }
 
 const defaultPostState: PostState = {
   posts: [],
+  postDeleted: false,
 };
 
 export const postState = atom<PostState>({

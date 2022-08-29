@@ -8,6 +8,8 @@ import {
   Stack,
   Text,
   Link,
+  SkeletonText,
+  SkeletonCircle,
 } from "@chakra-ui/react";
 import {
   collection,
@@ -61,7 +63,7 @@ const HomeRight: React.FC<HomeRightProps> = () => {
     <Box pos="sticky" top="90px" w="100%">
       <Flex w="100%" align="center" justifyContent="space-between" mt={4}>
         <Flex align="center">
-          <Link href={`/${userData.username}`}>
+          <Link href={`/${userData?.username}`}>
             <Box
               border="1px solid"
               borderColor="#c5c5c5"
@@ -77,16 +79,21 @@ const HomeRight: React.FC<HomeRightProps> = () => {
               />
             </Box>
           </Link>
-          <Flex flexDir="column">
-            <Link href={`/${userData.username}`}>
-              <Text fontSize="11pt" fontWeight={600} cursor="pointer">
-                {userData.username}
+
+          {loading ? (
+            <SkeletonText noOfLines={2} width="120px" />
+          ) : (
+            <Flex flexDir="column">
+              <Link href={`/${userData?.username}`}>
+                <Text fontSize="11pt" fontWeight={600} cursor="pointer">
+                  {userData?.username}
+                </Text>
+              </Link>
+              <Text fontSize="10pt" color="gray.400">
+                {userData?.fullname}
               </Text>
-            </Link>
-            <Text fontSize="10pt" color="gray.400">
-              {userData.fullname}
-            </Text>
-          </Flex>
+            </Flex>
+          )}
         </Flex>
         <Text
           fontSize="10pt"

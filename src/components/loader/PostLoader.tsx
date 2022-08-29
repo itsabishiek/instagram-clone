@@ -9,7 +9,12 @@ import React from "react";
 
 const PostLoader: React.FC = () => {
   return (
-    <Stack spacing={6} bg="white" mt={4} w={{ base: "100%", md: "470px" }}>
+    <Stack
+      spacing={6}
+      bg="white"
+      mt={{ base: 0, md: 4 }}
+      w={{ base: "100%", md: "470px" }}
+    >
       <Flex
         padding="8px 4px 8px 12px"
         boxShadow="md"

@@ -21,12 +21,14 @@ interface UserState {
   userData: UserData;
   posts: Post[];
   postsFetched: boolean;
+  postDeleted: boolean;
 }
 
 const defaultUserDataState: UserState = {
   userData: {} as UserData,
   posts: [],
   postsFetched: false,
+  postDeleted: false,
 };
 
 export const userDataState = atom<UserState>({

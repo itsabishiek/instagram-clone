@@ -1,6 +1,6 @@
-import { Flex, Stack } from "@chakra-ui/react";
+import { Box, Flex, Stack } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import { query, collection, orderBy, getDocs } from "firebase/firestore";
+import { query, collection, orderBy, getDocs, where } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { Post, postState } from "../../atoms/postsAtom";
@@ -8,14 +8,15 @@ import { firestore } from "../../firebase/clientApp";
 import PostItem from "../post/PostItem";
 import PostLoader from "../loader/PostLoader";
 import Stories from "../Stories";
+import usePosts from "../../hooks/usePosts";
 
 type HomeLeftProps = {
   user?: User | null;
 };
 
 const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
-  const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const [loading, setLoading] = useState(false);
+  const { postStateValue, setPostStateValue, onDeletePost } = usePosts();
 
   const getPosts = async () => {
     setLoading(true);
@@ -39,19 +40,21 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
   useEffect(() => {
     getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid]);
-
-  console.log(postStateValue);
+  }, [user?.uid, postStateValue.postDeleted]);
 
   return (
     <Stack w={{ base: "100%", md: "470px" }}>
       {user && <Stories />}
 
-      <Stack mt="0rem !important">
+      <Stack mt={{ base: "0rem !important", md: "1rem !important" }}>
         {postStateValue.posts.map((post) => (
-          <>
-            {loading ? <PostLoader /> : <PostItem key={post.id} post={post} />}
-          </>
+          <Box key={post.id}>
+            {loading ? (
+              <PostLoader />
+            ) : (
+              <PostItem post={post} onDeletePost={onDeletePost} />
+            )}
+          </Box>
         ))}
       </Stack>
     </Stack>

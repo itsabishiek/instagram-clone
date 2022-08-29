@@ -26,6 +26,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
+import moment from "moment";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
@@ -73,14 +74,16 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
 
       const postDocRef = doc(collection(firestore, "posts"));
       const userPostDocRef = doc(
-        collection(firestore, `users/${userData.username}/posts`)
+        firestore,
+        `users/${userData.username}/posts`,
+        postDocRef.id
       );
 
       batch.set(postDocRef, newData);
       batch.set(userPostDocRef, newData);
 
       if (selectedFile) {
-        const imageRef = ref(storage, `posts/${userPostDocRef.id}/image`);
+        const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
         await uploadString(imageRef, selectedFile, "data_url");
         const downloadURL = await getDownloadURL(imageRef);
 
@@ -90,20 +93,53 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
         batch.update(userPostDocRef, {
           imageURL: downloadURL,
         });
+
+        setPostStateValue((prev) => ({
+          ...prev,
+          posts: [
+            {
+              userId: userData.uid,
+              name: userData.fullname,
+              username: userData.username,
+              imageURL: downloadURL,
+              profileImg: userData.imageURL || "",
+              caption: caption || "",
+              location: location || "",
+              numberOfComments: 0,
+              numberOfLikes: 0,
+              createdAt: moment(Date.now()).fromNow() as string,
+            },
+            ...prev.posts,
+          ] as Post[],
+        }));
+        setUserStateValue((prev) => ({
+          ...prev,
+          posts: [
+            {
+              userId: userData.uid,
+              name: userData.fullname,
+              username: userData.username,
+              imageURL: downloadURL,
+              profileImg: userData.imageURL || "",
+              caption: caption || "",
+              location: location || "",
+              numberOfComments: 0,
+              numberOfLikes: 0,
+              createdAt: moment(Date.now()).fromNow() as string,
+            },
+            ...prev.posts,
+          ] as Post[],
+        }));
       }
 
       await batch.commit();
 
-      setPostStateValue((prev) => ({
-        ...prev,
-        posts: [newData, ...prev.posts] as Post[],
-      }));
-      setUserStateValue((prev) => ({
-        ...prev,
-        posts: [newData, ...prev.posts] as Post[],
-      }));
-
       onClose();
+
+      setSelectedFile("");
+      setNextStep(0);
+      setCaption("");
+      setLocation("");
     } catch (error) {
       console.log("handleCreatePost Error", error);
     }

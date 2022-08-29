@@ -11,12 +11,20 @@ import {
 import React from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { Post } from "../../atoms/postsAtom";
+import DeletePostModal from "../modals/DeletePostModal";
 
 type PostMenuProps = {
   userIsCreator: boolean;
+  post: Post;
+  onDeletePost: (post: Post, userPost: Post) => Promise<boolean>;
 };
 
-const PostMenu: React.FC<PostMenuProps> = ({ userIsCreator }) => {
+const PostMenu: React.FC<PostMenuProps> = ({
+  userIsCreator,
+  post,
+  onDeletePost,
+}) => {
   return (
     <Menu>
       <MenuButton borderRadius={4}>
@@ -45,18 +53,14 @@ const PostMenu: React.FC<PostMenuProps> = ({ userIsCreator }) => {
             borderColor="gray.200"
             borderRadius={4}
           >
-            <Flex align="center">
-              {false ? (
-                <Spinner size="sm" ml={3} />
-              ) : (
-                <>
-                  <Icon as={AiOutlineDelete} fontSize={20} mr={2} pb={1} />
-                  <Text fontWeight={600} fontSize="10pt">
-                    Delete Post
-                  </Text>
-                </>
-              )}
-            </Flex>
+            <DeletePostModal post={post} onDeletePost={onDeletePost}>
+              <Flex align="center">
+                <Icon as={AiOutlineDelete} fontSize={20} mr={2} pb={1} />
+                <Text fontWeight={600} fontSize="10pt">
+                  Delete Post
+                </Text>
+              </Flex>
+            </DeletePostModal>
           </MenuItem>
           <MenuItem _hover={{ bg: "gray.200" }} p="10px">
             <Flex align="center">
