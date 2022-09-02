@@ -1,12 +1,6 @@
 import { Button, Image, Text } from "@chakra-ui/react";
 import { User } from "firebase/auth";
-import {
-  addDoc,
-  collection,
-  doc,
-  serverTimestamp,
-  setDoc,
-} from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import router from "next/router";
 import React, { useEffect, useState } from "react";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";

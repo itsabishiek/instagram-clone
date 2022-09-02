@@ -8,15 +8,13 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import React, { useState } from "react";
 import { Post } from "../../atoms/postsAtom";
-import { userDataState } from "../../atoms/userDataAtom";
 
 type DeletePostModalProps = {
   children: React.ReactNode;
   post: Post;
-  onDeletePost: (post: Post, userPost: Post) => Promise<boolean>;
+  onDeletePost: (post: Post) => Promise<boolean>;
 };
 
 const DeletePostModal: React.FC<DeletePostModalProps> = ({
@@ -25,20 +23,12 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({
   onDeletePost,
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const userStateValue = useRecoilValue(userDataState);
   const [deleting, setDeleting] = useState(false);
-  const [userPost, setUserPost] = useState<Post>();
-
-  useEffect(() => {
-    userStateValue.posts.map((post) => {
-      setUserPost(post);
-    });
-  }, [userStateValue.posts]);
 
   const handleDelete = async () => {
     setDeleting(true);
     try {
-      await onDeletePost(post, userPost!);
+      await onDeletePost(post);
       onClose();
     } catch (error: any) {
       console.log("handleDelete Error", error);

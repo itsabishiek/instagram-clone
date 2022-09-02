@@ -16,7 +16,8 @@ type HomeLeftProps = {
 
 const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
   const [loading, setLoading] = useState(false);
-  const { postStateValue, setPostStateValue, onDeletePost } = usePosts();
+  const { postStateValue, setPostStateValue, onDeletePost, likePost } =
+    usePosts();
 
   const getPosts = async () => {
     setLoading(true);
@@ -47,12 +48,16 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
       {user && <Stories />}
 
       <Stack mt={{ base: "0rem !important", md: "1rem !important" }}>
-        {postStateValue.posts.map((post) => (
+        {postStateValue?.posts.map((post) => (
           <Box key={post.id}>
             {loading ? (
               <PostLoader />
             ) : (
-              <PostItem post={post} onDeletePost={onDeletePost} />
+              <PostItem
+                post={post}
+                onDeletePost={onDeletePost}
+                likePost={likePost}
+              />
             )}
           </Box>
         ))}

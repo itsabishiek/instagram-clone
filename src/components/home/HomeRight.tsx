@@ -53,7 +53,9 @@ const HomeRight: React.FC<HomeRightProps> = () => {
   };
 
   useEffect(() => {
-    suggestionUsers();
+    if (user) {
+      suggestionUsers();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

@@ -1,6 +1,6 @@
 import { Timestamp } from "firebase/firestore";
 import { atom } from "recoil";
-import { Post } from "./postsAtom";
+import { LikePost, Post } from "./postsAtom";
 
 export type UserData = {
   id: string;

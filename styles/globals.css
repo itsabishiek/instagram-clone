@@ -1,4 +1,11 @@
+body {
+  scrollbar-width: none;
+}
+
 ::-webkit-scrollbar {
   display: none;
-  scrollbar-width: none;
+}
+
+.likeButton:hover {
+  opacity: 0.6;
 }

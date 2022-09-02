@@ -15,13 +15,23 @@ export type Post = {
   createdAt: Timestamp;
 };
 
+export type LikePost = {
+  id: string;
+  username: string;
+  postId: string;
+};
+
 interface PostState {
   posts: Post[];
+  likes: LikePost[];
+  hasLiked: boolean;
   postDeleted: boolean;
 }
 
 const defaultPostState: PostState = {
   posts: [],
+  likes: [],
+  hasLiked: false,
   postDeleted: false,
 };
 

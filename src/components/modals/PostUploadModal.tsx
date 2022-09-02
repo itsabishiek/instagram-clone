@@ -73,14 +73,8 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
       };
 
       const postDocRef = doc(collection(firestore, "posts"));
-      const userPostDocRef = doc(
-        firestore,
-        `users/${userData.username}/posts`,
-        postDocRef.id
-      );
 
       batch.set(postDocRef, newData);
-      batch.set(userPostDocRef, newData);
 
       if (selectedFile) {
         const imageRef = ref(storage, `posts/${postDocRef.id}/image`);
@@ -90,29 +84,8 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
         batch.update(postDocRef, {
           imageURL: downloadURL,
         });
-        batch.update(userPostDocRef, {
-          imageURL: downloadURL,
-        });
 
         setPostStateValue((prev) => ({
-          ...prev,
-          posts: [
-            {
-              userId: userData.uid,
-              name: userData.fullname,
-              username: userData.username,
-              imageURL: downloadURL,
-              profileImg: userData.imageURL || "",
-              caption: caption || "",
-              location: location || "",
-              numberOfComments: 0,
-              numberOfLikes: 0,
-              createdAt: moment(Date.now()).fromNow() as string,
-            },
-            ...prev.posts,
-          ] as Post[],
-        }));
-        setUserStateValue((prev) => ({
           ...prev,
           posts: [
             {

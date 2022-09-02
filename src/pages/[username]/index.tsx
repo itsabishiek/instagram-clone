@@ -14,33 +14,37 @@ import {
   getDocs,
   orderBy,
   query,
+  where,
 } from "firebase/firestore";
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
 import { Post, postState } from "../../atoms/postsAtom";
 import { UserData, userDataState } from "../../atoms/userDataAtom";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
-import { firestore } from "../../firebase/clientApp";
+import { auth, firestore } from "../../firebase/clientApp";
 
 type ProfilePageProps = {
   userData: UserData;
 };
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
+  const [user] = useAuthState(auth);
   const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
   const [loading, setLoading] = useState(false);
-
-  console.log(userStateValue);
+  const router = useRouter();
 
   const getUserPosts = async () => {
     setLoading(true);
     try {
       const userPostsQuery = query(
-        collection(firestore, `users/${userData.username}/posts`),
+        collection(firestore, "posts"),
+        where("username", "==", userData.username),
         orderBy("createdAt", "desc")
       );
       const userPostsDocs = await getDocs(userPostsQuery);
@@ -71,8 +75,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   if (!userData) {
     return <Flex>Oops! there is no such username!</Flex>;
   }
-
-  // console.log(userData);
 
   return (
     <>
@@ -158,19 +160,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                 </svg>
               </Flex>
 
-              <Link href="/accounts/edit">
-                <Button
-                  variant="outline"
-                  color="#262626"
-                  border="1px solid rgb(219,219,219)"
-                  fontSize="10pt"
-                  p="5px 9px"
-                  mr={2}
-                  w="100%"
-                >
-                  Edit Profile
+              {user?.email === userData.email ? (
+                <Link href="/accounts/edit">
+                  <Button
+                    variant="outline"
+                    color="#262626"
+                    border="1px solid rgb(219,219,219)"
+                    fontSize="10pt"
+                    p="5px 9px"
+                    mr={2}
+                    w="100%"
+                  >
+                    Edit Profile
+                  </Button>
+                </Link>
+              ) : (
+                <Button h="30px" w="150px">
+                  Follow
                 </Button>
-              </Link>
+              )}
             </Stack>
           </Flex>
 
@@ -189,18 +197,25 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                 {userData.username}
               </Text>
 
-              <Link href="/accounts/edit">
-                <Button
-                  variant="outline"
-                  color="#262626"
-                  fontSize="10pt"
-                  fontWeight="light"
-                  p="5px 9px"
-                  mr={2}
-                >
-                  Edit Profile
+              {user?.email === userData.email ? (
+                <Link href="/accounts/edit">
+                  <Button
+                    variant="outline"
+                    color="#262626"
+                    fontSize="10pt"
+                    fontWeight="light"
+                    p="5px 9px"
+                    mr={2}
+                  >
+                    Edit Profile
+                  </Button>
+                </Link>
+              ) : (
+                <Button h="30px" w="120px" mr={2}>
+                  Follow
                 </Button>
-              </Link>
+              )}
+
               <svg
                 aria-label="Options"
                 color="#262626"
