@@ -22,7 +22,7 @@ import PostMenu from "../menus/PostMenu";
 
 type PostItemProps = {
   post: Post;
-  onDeletePost: (post: Post, userPost: Post) => Promise<boolean>;
+  onDeletePost: (post: Post) => Promise<boolean>;
   likePost: (
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,

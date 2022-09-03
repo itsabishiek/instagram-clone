@@ -17,7 +17,7 @@ import DeletePostModal from "../modals/DeletePostModal";
 type PostMenuProps = {
   userIsCreator: boolean;
   post: Post;
-  onDeletePost: (post: Post, userPost: Post) => Promise<boolean>;
+  onDeletePost: (post: Post) => Promise<boolean>;
 };
 
 const PostMenu: React.FC<PostMenuProps> = ({
