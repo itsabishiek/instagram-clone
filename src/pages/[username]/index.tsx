@@ -19,12 +19,11 @@ import {
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
-import { Post, postState } from "../../atoms/postsAtom";
+import { Post } from "../../atoms/postsAtom";
 import { UserData, userDataState } from "../../atoms/userDataAtom";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
 import { auth, firestore } from "../../firebase/clientApp";
@@ -37,7 +36,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   const [user] = useAuthState(auth);
   const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const getUserPosts = async () => {
     setLoading(true);
@@ -265,7 +263,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                 align="center"
               >
                 <Text fontWeight={600} mr={1} color="#262626">
-                  0
+                  {userStateValue.posts.length}
                 </Text>
                 <Text fontWeight="light">posts</Text>
               </Flex>

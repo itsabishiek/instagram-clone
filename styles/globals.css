@@ -9,3 +9,7 @@ body {
 .likeButton:hover {
   opacity: 0.6;
 }
+
+.rotateIcon {
+  transform: rotate(270deg);
+}

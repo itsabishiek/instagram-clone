@@ -26,6 +26,7 @@ interface PostState {
   likes: LikePost[];
   hasLiked: boolean;
   postDeleted: boolean;
+  selectedPost: Post | null;
 }
 
 const defaultPostState: PostState = {
@@ -33,6 +34,7 @@ const defaultPostState: PostState = {
   likes: [],
   hasLiked: false,
   postDeleted: false,
+  selectedPost: null,
 };
 
 export const postState = atom<PostState>({

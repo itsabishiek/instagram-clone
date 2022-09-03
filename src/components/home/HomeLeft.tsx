@@ -16,8 +16,13 @@ type HomeLeftProps = {
 
 const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
   const [loading, setLoading] = useState(false);
-  const { postStateValue, setPostStateValue, onDeletePost, likePost } =
-    usePosts();
+  const {
+    postStateValue,
+    setPostStateValue,
+    onDeletePost,
+    likePost,
+    onSelectPost,
+  } = usePosts();
 
   const getPosts = async () => {
     setLoading(true);
@@ -57,6 +62,7 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
                 post={post}
                 onDeletePost={onDeletePost}
                 likePost={likePost}
+                onSelectPost={onSelectPost}
               />
             )}
           </Box>

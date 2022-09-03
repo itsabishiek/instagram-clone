@@ -1,11 +1,4 @@
-import {
-  collection,
-  deleteDoc,
-  doc,
-  increment,
-  setDoc,
-  writeBatch,
-} from "firebase/firestore";
+import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -116,12 +109,22 @@ const usePosts = () => {
     }
   };
 
+  const onSelectPost = (post: Post) => {
+    setPostStateValue((prev) => ({
+      ...prev,
+      selectedPost: post,
+    }));
+
+    router.push(`/p/${post.id}`);
+  };
+
   return {
     postStateValue,
     setPostStateValue,
     setUserStateValue,
     onDeletePost,
     likePost,
+    onSelectPost,
   };
 };
 export default usePosts;

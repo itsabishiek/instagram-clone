@@ -1,24 +1,20 @@
 import {
-  useDisclosure,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
+  Avatar,
   Box,
-  Text,
+  Button,
+  CloseButton,
   Flex,
   Image,
-  Textarea,
-  Avatar,
   Input,
-  CloseButton,
+  Modal,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
+  Text,
+  Textarea,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-  addDoc,
   collection,
   doc,
   serverTimestamp,
@@ -29,7 +25,7 @@ import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import moment from "moment";
 import Head from "next/head";
 import React, { useRef, useState } from "react";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { Post, postState } from "../../atoms/postsAtom";
 import { userDataState } from "../../atoms/userDataAtom";
 import { firestore, storage } from "../../firebase/clientApp";

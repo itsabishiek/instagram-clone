@@ -44,8 +44,8 @@ const PostMenu: React.FC<PostMenuProps> = ({
           </svg>
         </Flex>
       </MenuButton>
-      {userIsCreator && (
-        <MenuList p={0}>
+      <MenuList p={0}>
+        {userIsCreator && (
           <MenuItem
             _hover={{ bg: "gray.200" }}
             p="10px"
@@ -62,16 +62,16 @@ const PostMenu: React.FC<PostMenuProps> = ({
               </Flex>
             </DeletePostModal>
           </MenuItem>
-          <MenuItem _hover={{ bg: "gray.200" }} p="10px">
-            <Flex align="center">
-              <Icon as={FiMoreHorizontal} fontSize={20} mr={2} pb={1} />
-              <Text fontWeight={600} fontSize="10pt">
-                More Options
-              </Text>
-            </Flex>
-          </MenuItem>
-        </MenuList>
-      )}
+        )}
+        <MenuItem _hover={{ bg: "gray.200" }} p="10px">
+          <Flex align="center">
+            <Icon as={FiMoreHorizontal} fontSize={20} mr={2} pb={1} />
+            <Text fontWeight={600} fontSize="10pt">
+              More Options
+            </Text>
+          </Flex>
+        </MenuItem>
+      </MenuList>
     </Menu>
   );
 };
