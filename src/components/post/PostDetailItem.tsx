@@ -19,7 +19,8 @@ import { LikePost, Post, postState } from "../../atoms/postsAtom";
 import { userDataState } from "../../atoms/userDataAtom";
 import { auth, firestore } from "../../firebase/clientApp";
 import PostMenu from "../menus/PostMenu";
-import MediaQuery from "react-responsive";
+import Comments from "../comments/Comments";
+import { Comment } from "../../hooks/usePosts";
 
 type PostItemProps = {
   post: Post;
@@ -29,17 +30,26 @@ type PostItemProps = {
     post: Post,
     username: string
   ) => void;
-  onSelectPost?: (post: Post) => void;
+  commentText: string;
+  setCommentText: (value: string) => void;
+  onCreateComment: () => void;
+  comments: Comment[];
+  loading: boolean;
+  commentLoading: boolean;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
   post,
   onDeletePost,
   likePost,
-  onSelectPost,
+  commentText,
+  setCommentText,
+  onCreateComment,
+  comments,
+  loading,
+  commentLoading,
 }) => {
   const [user] = useAuthState(auth);
-  const [loadingImage, setLoadingImage] = useState(true);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const userStateValue = useRecoilValue(userDataState);
 
@@ -90,7 +100,7 @@ const PostItem: React.FC<PostItemProps> = ({
         borderBottom="1px solid"
         borderColor="gray.200"
       >
-        <Flex align="center" m="8px 4px 8px 12px">
+        <Flex align="center" p="8px 4px 8px 12px">
           <Link href={`/${post.username}`}>
             <Avatar src={post.profileImg} w="32px" h="32px" mr={3} />
           </Link>
@@ -113,16 +123,19 @@ const PostItem: React.FC<PostItemProps> = ({
         />
       </Flex>
 
+      <Comments post={post} comments={comments} loading={commentLoading} />
+
       <Flex
         justify="space-between"
         align="center"
         p="5px 12px 6px"
         m="-34px 0px 0px"
-        pos="absolute"
+        pos="sticky"
         w="100%"
-        bottom="100px"
+        borderTop="1px solid"
+        borderColor="gray.200"
       >
-        <Flex align="center" gap={4}>
+        <Flex align="center" gap={4} pt={2}>
           {hasLiked ? (
             <svg
               aria-label="Unlike"
@@ -133,7 +146,6 @@ const PostItem: React.FC<PostItemProps> = ({
               viewBox="0 0 48 48"
               width="24"
               cursor="pointer"
-              className="likeButton"
               onClick={(e) =>
                 likePost(e, post, userStateValue.userData.username)
               }
@@ -213,16 +225,12 @@ const PostItem: React.FC<PostItemProps> = ({
         </Box>
       </Flex>
 
-      <Stack
-        p="0px 12px"
-        pb={{ base: 3, md: 0 }}
-        pos="absolute"
-        w="100%"
-        bottom="55px"
-      >
-        <Text fontSize={{ base: "10pt", md: "11pt" }} fontWeight={600}>
-          {post.numberOfLikes} likes
-        </Text>
+      <Stack p="0px 12px" pb={{ base: 3, md: 0 }} pos="sticky" w="100%">
+        {post.numberOfLikes > 0 && (
+          <Text fontSize={{ base: "10pt", md: "11pt" }} fontWeight={600}>
+            {post.numberOfLikes} likes
+          </Text>
+        )}
 
         <Text
           color="#8e8e8e"
@@ -240,7 +248,7 @@ const PostItem: React.FC<PostItemProps> = ({
         borderBottom={{ base: "1px solid", md: "none" }}
         borderColor="gray.100"
         display={{ base: "none", md: "flex" }}
-        pos="absolute"
+        pos="sticky"
         w="100%"
         bottom={0}
       >
@@ -265,8 +273,16 @@ const PostItem: React.FC<PostItemProps> = ({
           h="40px"
           m="0px 5px 0px 10px"
           resize="none"
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
         />
-        <Button variant="shareButton" color="brand.100" fontSize="10.5pt">
+        <Button
+          variant="shareButton"
+          color="brand.100"
+          fontSize="10.5pt"
+          onClick={onCreateComment}
+          isLoading={loading}
+        >
           Post
         </Button>
       </Flex>

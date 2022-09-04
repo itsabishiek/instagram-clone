@@ -38,7 +38,7 @@ const useUserData = () => {
       getUserData(user);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user?.uid]);
 
   //   console.log(userStateValue);
 

@@ -25,6 +25,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
       w="100%"
       isFitted={true}
       variant="enclosed"
+      zIndex={10001}
     >
       <TabList>
         <Tab>

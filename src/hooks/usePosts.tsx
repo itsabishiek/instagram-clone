@@ -1,4 +1,12 @@
-import { collection, deleteDoc, doc, writeBatch } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  increment,
+  serverTimestamp,
+  Timestamp,
+  writeBatch,
+} from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -8,11 +16,23 @@ import { Post, postState } from "../atoms/postsAtom";
 import { userDataState } from "../atoms/userDataAtom";
 import { auth, firestore, storage } from "../firebase/clientApp";
 
+export type Comment = {
+  id: string;
+  name: string;
+  username: string;
+  postId: string;
+  profileImg?: string;
+  comment: string;
+  createdAt: Timestamp;
+};
+
 const usePosts = () => {
   const [user] = useAuthState(auth);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
-  const setUserStateValue = useSetRecoilState(userDataState);
-  const [loading, setLoading] = useState(false);
+  const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [commenting, setCommenting] = useState(false);
   const router = useRouter();
 
   const onDeletePost = async (post: Post): Promise<boolean> => {
@@ -103,6 +123,13 @@ const usePosts = () => {
         numberOfLikes: updatedPost.numberOfLikes,
       });
 
+      if (postStateValue.selectedPost) {
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: updatedPost,
+        }));
+      }
+
       await batch.commit();
     } catch (error) {
       console.log("likePost Error", error);
@@ -110,12 +137,70 @@ const usePosts = () => {
   };
 
   const onSelectPost = (post: Post) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
     setPostStateValue((prev) => ({
       ...prev,
       selectedPost: post,
     }));
 
     router.push(`/p/${post.id}`);
+  };
+
+  const onCreateComment = async () => {
+    setCommenting(true);
+    try {
+      const batch = writeBatch(firestore);
+      // create a comment
+      const commentDocRef = doc(
+        collection(
+          firestore,
+          "posts",
+          `${postStateValue.selectedPost?.id as string}/comments`
+        )
+      );
+      const newComment: Comment = {
+        id: commentDocRef.id,
+        name: userStateValue.userData.fullname,
+        username: userStateValue.userData.username,
+        postId: postStateValue.selectedPost?.id as string,
+        profileImg: userStateValue.userData.imageURL,
+        comment: commentText,
+        createdAt: serverTimestamp() as Timestamp,
+      };
+
+      batch.set(commentDocRef, newComment);
+
+      newComment.createdAt = { seconds: Date.now() / 1000 } as Timestamp;
+
+      // update post numberOfComments (+1)
+      const postDocRef = doc(
+        firestore,
+        "posts",
+        postStateValue.selectedPost?.id as string
+      );
+      batch.update(postDocRef, {
+        numberOfComments: increment(1),
+      });
+
+      await batch.commit();
+
+      // updating client recoil state
+      setCommentText("");
+      setComments((prev) => [newComment, ...prev]);
+      setPostStateValue((prev) => ({
+        ...prev,
+        selectedPost: {
+          ...prev.selectedPost,
+          numberOfComments: prev.selectedPost?.numberOfComments! + 1,
+        } as Post,
+      }));
+    } catch (error) {
+      console.log("onCreateComment Error", error);
+    }
+    setCommenting(false);
   };
 
   return {
@@ -125,6 +210,12 @@ const usePosts = () => {
     onDeletePost,
     likePost,
     onSelectPost,
+    onCreateComment,
+    commentText,
+    setCommentText,
+    comments,
+    setComments,
+    commenting,
   };
 };
 export default usePosts;

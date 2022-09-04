@@ -129,7 +129,6 @@ const PostItem: React.FC<PostItemProps> = ({
               viewBox="0 0 48 48"
               width="24"
               cursor="pointer"
-              className="likeButton"
               onClick={(e) =>
                 likePost(e, post, userStateValue.userData.username)
               }
@@ -231,14 +230,14 @@ const PostItem: React.FC<PostItemProps> = ({
       </Flex>
 
       <Stack p="0px 12px" pb={{ base: 3, md: 0 }}>
-        <Text fontSize={{ base: "10pt", md: "11pt" }} fontWeight={600}>
-          {post.numberOfLikes} likes
-        </Text>
+        {post.numberOfLikes > 0 && (
+          <Text fontSize={{ base: "10pt", md: "11pt" }} fontWeight={600}>
+            {post.numberOfLikes} likes
+          </Text>
+        )}
 
-        <Text fontSize="10pt">
-          <span
-            style={{ fontWeight: 600, fontSize: "10pt", cursor: "pointer" }}
-          >
+        <Text fontSize={{ base: "9pt", md: "10pt" }}>
+          <span style={{ fontWeight: 600, fontSize: "9pt", cursor: "pointer" }}>
             {post.username}
           </span>{" "}
           {post.caption}

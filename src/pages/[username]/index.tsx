@@ -25,6 +25,7 @@ import { useRecoilState } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
 import { Post } from "../../atoms/postsAtom";
 import { UserData, userDataState } from "../../atoms/userDataAtom";
+import PageNotFound from "../../components/PageNotFound";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
 import { auth, firestore } from "../../firebase/clientApp";
 
@@ -71,7 +72,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   }, [userData]);
 
   if (!userData) {
-    return <Flex>Oops! there is no such username!</Flex>;
+    return <PageNotFound />;
   }
 
   return (
