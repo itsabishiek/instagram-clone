@@ -17,9 +17,17 @@ type CommentsProps = {
   post: Post;
   comments: Comment[];
   loading: boolean;
+  onDeleteComment: (comment: Comment) => void;
+  deleting: string;
 };
 
-const Comments: React.FC<CommentsProps> = ({ post, comments, loading }) => {
+const Comments: React.FC<CommentsProps> = ({
+  post,
+  comments,
+  loading,
+  onDeleteComment,
+  deleting,
+}) => {
   console.log(comments);
 
   return (
@@ -47,7 +55,7 @@ const Comments: React.FC<CommentsProps> = ({ post, comments, loading }) => {
             {post.caption}
           </Text>
           <Text fontSize="8pt">
-            {moment(post.createdAt.seconds * 1000).fromNow()}
+            {moment(post.createdAt?.seconds * 1000).fromNow()}
           </Text>
         </Box>
       </Flex>
@@ -62,19 +70,39 @@ const Comments: React.FC<CommentsProps> = ({ post, comments, loading }) => {
                   <SkeletonText w="70%" noOfLines={2} spacing="2" />
                 </Flex>
               ) : (
-                <CommentItem key={comment.id} comment={comment} />
+                <CommentItem
+                  key={comment.id}
+                  comment={comment}
+                  onDeleteComment={onDeleteComment}
+                  deleting={deleting}
+                />
               )}
             </Box>
           ))}
         </>
       ) : (
-        <Flex h={{ base: "350px", md: "100%" }} align="center" justify="center">
+        <Flex
+          flexDir="column"
+          h={{ base: "350px", md: "100%" }}
+          align="center"
+          justify="center"
+        >
           <Text
             fontSize={{ base: "14pt", md: "11.5pt" }}
             fontWeight={600}
             color="#8e8e8e"
+            textAlign="center"
+            mb={1}
           >
             No Commments Yet
+          </Text>
+          <Text
+            fontSize={{ base: "11pt", md: "9.5pt" }}
+            fontWeight="light"
+            color="#8e8e8e"
+            textAlign="center"
+          >
+            Start the conversation
           </Text>
         </Flex>
       )}

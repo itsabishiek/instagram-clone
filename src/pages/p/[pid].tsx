@@ -47,6 +47,8 @@ const PostPage: React.FC<PostPageProps> = () => {
     commenting,
     comments,
     setComments,
+    onDeleteComment,
+    deleting,
   } = usePosts();
   const post = postStateValue.selectedPost;
   const router = useRouter();
@@ -138,7 +140,13 @@ const PostPage: React.FC<PostPageProps> = () => {
                   border={{ base: "none", md: "1px solid" }}
                   borderColor={{ base: "none", md: "gray.200" }}
                 >
-                  <Image src={post.imageURL} alt="" objectFit="contain" />
+                  <Image
+                    src={post.imageURL}
+                    alt=""
+                    maxH="440px"
+                    h="100%"
+                    objectFit="contain"
+                  />
                 </Box>
 
                 <Box w={{ base: "100%", md: "40%" }}>
@@ -152,6 +160,8 @@ const PostPage: React.FC<PostPageProps> = () => {
                     comments={comments}
                     loading={commenting}
                     commentLoading={commentLoading}
+                    onDeleteComment={onDeleteComment}
+                    deleting={deleting}
                   />
                 </Box>
               </Flex>
@@ -165,6 +175,8 @@ const PostPage: React.FC<PostPageProps> = () => {
               comments={comments}
               loading={commenting}
               commentLoading={commentLoading}
+              onDeleteComment={onDeleteComment}
+              deleting={deleting}
             />
           </>
         )}

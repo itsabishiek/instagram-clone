@@ -10,7 +10,7 @@ import {
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,6 +18,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { LikePost, Post, postState } from "../../atoms/postsAtom";
 import { userDataState } from "../../atoms/userDataAtom";
 import { auth, firestore } from "../../firebase/clientApp";
+import { Comment } from "../../hooks/usePosts";
 import PostMenu from "../menus/PostMenu";
 
 type PostItemProps = {
@@ -29,6 +30,12 @@ type PostItemProps = {
     username: string
   ) => void;
   onSelectPost?: (post: Post) => void;
+  commentText: string;
+  setCommentText: (value: string) => void;
+  onCreateComment: () => void;
+  loading: boolean;
+  comments: Comment[];
+  setComments: (value: Comment[]) => void;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -36,9 +43,16 @@ const PostItem: React.FC<PostItemProps> = ({
   onDeletePost,
   likePost,
   onSelectPost,
+  commentText,
+  setCommentText,
+  onCreateComment,
+  loading,
+  comments,
+  setComments,
 }) => {
   const [user] = useAuthState(auth);
   const [loadingImage, setLoadingImage] = useState(true);
+  const [commentLoading, setCommentLoading] = useState(false);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const userStateValue = useRecoilValue(userDataState);
 
@@ -243,14 +257,16 @@ const PostItem: React.FC<PostItemProps> = ({
           {post.caption}
         </Text>
 
-        <Text
-          fontSize={{ base: "13px", md: "14px" }}
-          color="#8e8e8e"
-          letterSpacing={0.1}
-          cursor="pointer"
-        >
-          View all comments
-        </Text>
+        <Link href={`/p/${post.id}`} _hover={{ textDecor: "none" }}>
+          <Text
+            fontSize={{ base: "13px", md: "14px" }}
+            color="#8e8e8e"
+            letterSpacing={0.1}
+            cursor="pointer"
+          >
+            View all comments
+          </Text>
+        </Link>
 
         <Text
           color="#8e8e8e"
@@ -290,8 +306,16 @@ const PostItem: React.FC<PostItemProps> = ({
           h="40px"
           m="0px 5px 0px 10px"
           resize="none"
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
         />
-        <Button variant="shareButton" color="brand.100" fontSize="10.5pt">
+        <Button
+          variant="shareButton"
+          color="brand.100"
+          fontSize="10.5pt"
+          onClick={onCreateComment}
+          isLoading={loading}
+        >
           Post
         </Button>
       </Flex>

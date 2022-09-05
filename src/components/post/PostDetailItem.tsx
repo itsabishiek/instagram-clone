@@ -36,6 +36,8 @@ type PostItemProps = {
   comments: Comment[];
   loading: boolean;
   commentLoading: boolean;
+  onDeleteComment: (comment: Comment) => void;
+  deleting: string;
 };
 
 const PostItem: React.FC<PostItemProps> = ({
@@ -48,6 +50,8 @@ const PostItem: React.FC<PostItemProps> = ({
   comments,
   loading,
   commentLoading,
+  onDeleteComment,
+  deleting,
 }) => {
   const [user] = useAuthState(auth);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
@@ -123,7 +127,13 @@ const PostItem: React.FC<PostItemProps> = ({
         />
       </Flex>
 
-      <Comments post={post} comments={comments} loading={commentLoading} />
+      <Comments
+        post={post}
+        comments={comments}
+        loading={commentLoading}
+        onDeleteComment={onDeleteComment}
+        deleting={deleting}
+      />
 
       <Flex
         justify="space-between"
@@ -237,7 +247,7 @@ const PostItem: React.FC<PostItemProps> = ({
           fontSize={{ base: "6pt", md: "8pt" }}
           textTransform="uppercase"
         >
-          {moment(new Date(post.createdAt.seconds * 1000)).fromNow()}
+          {moment(new Date(post.createdAt?.seconds * 1000)).fromNow()}
         </Text>
       </Stack>
 

@@ -11,7 +11,7 @@ import { deleteObject, ref } from "firebase/storage";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import { Post, postState } from "../atoms/postsAtom";
 import { userDataState } from "../atoms/userDataAtom";
 import { auth, firestore, storage } from "../firebase/clientApp";
@@ -33,6 +33,7 @@ const usePosts = () => {
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState<Comment[]>([]);
   const [commenting, setCommenting] = useState(false);
+  const [deleting, setDeleting] = useState("");
   const router = useRouter();
 
   const onDeletePost = async (post: Post): Promise<boolean> => {
@@ -203,6 +204,47 @@ const usePosts = () => {
     setCommenting(false);
   };
 
+  const onDeleteComment = async (comment: Comment) => {
+    setDeleting(comment.id);
+    try {
+      const batch = writeBatch(firestore);
+
+      const commentDocRef = doc(
+        firestore,
+        "posts",
+        `${postStateValue.selectedPost?.id as string}/comments/${comment.id}`
+      );
+      await deleteDoc(commentDocRef);
+
+      // update post numberOfComments
+      const postDocRef = doc(
+        firestore,
+        "posts",
+        postStateValue.selectedPost?.id as string
+      );
+      batch.update(postDocRef, {
+        numberOfComments: increment(-1),
+      });
+
+      await batch.commit();
+
+      // update recoil client state
+      setPostStateValue((prev) => ({
+        ...prev,
+        selectedPost: {
+          ...prev.selectedPost,
+          numberOfComments: prev.selectedPost?.numberOfComments! - 1,
+        } as Post,
+      }));
+
+      // remove comment from comments array
+      setComments((prev) => prev.filter((item) => item.id !== comment.id));
+    } catch (error) {
+      console.log("onDeleteComment Error", error);
+    }
+    setDeleting("");
+  };
+
   return {
     postStateValue,
     setPostStateValue,
@@ -216,6 +258,8 @@ const usePosts = () => {
     comments,
     setComments,
     commenting,
+    onDeleteComment,
+    deleting,
   };
 };
 export default usePosts;

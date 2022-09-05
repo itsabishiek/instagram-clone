@@ -22,6 +22,12 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
     onDeletePost,
     likePost,
     onSelectPost,
+    commentText,
+    setCommentText,
+    commenting,
+    onCreateComment,
+    comments,
+    setComments,
   } = usePosts();
 
   const getPosts = async () => {
@@ -63,6 +69,12 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
                 onDeletePost={onDeletePost}
                 likePost={likePost}
                 onSelectPost={onSelectPost}
+                commentText={commentText}
+                setCommentText={setCommentText}
+                onCreateComment={onCreateComment}
+                loading={commenting}
+                comments={comments}
+                setComments={setComments}
               />
             )}
           </Box>

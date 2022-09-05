@@ -1,13 +1,19 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Text } from "@chakra-ui/react";
 import moment from "moment";
 import React from "react";
 import { Comment } from "../../hooks/usePosts";
 
 type CommentItemProps = {
   comment: Comment;
+  onDeleteComment: (comment: Comment) => void;
+  deleting: string;
 };
 
-const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
+const CommentItem: React.FC<CommentItemProps> = ({
+  comment,
+  onDeleteComment,
+  deleting,
+}) => {
   return (
     <Flex p="8px 12px 8px 12px" align="left" justify="space-between">
       <Flex align="left">
@@ -22,8 +28,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
             {comment.comment}
           </Text>
           <Flex align="center">
-            <Text fontSize="8pt" mr={1}>
-              {moment(comment.createdAt.seconds * 1000).fromNow()}
+            <Text fontSize="8pt" mr={3}>
+              {moment(comment.createdAt?.seconds * 1000).fromNow()}
             </Text>
             <Text
               fontSize="8pt"
@@ -31,9 +37,24 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment }) => {
               cursor="pointer"
               fontWeight={600}
               color="#8e8e8e"
+              mr={3}
             >
-              • Reply
+              Reply
             </Text>
+            <Button
+              variant="shareButton"
+              fontSize="8pt"
+              letterSpacing={0.1}
+              cursor="pointer"
+              fontWeight={600}
+              color="#8e8e8e"
+              h="inherit"
+              mr={3}
+              onClick={() => onDeleteComment(comment)}
+              isLoading={deleting === comment.id}
+            >
+              Delete
+            </Button>
           </Flex>
         </Box>
       </Flex>

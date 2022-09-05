@@ -22,6 +22,8 @@ type MobilePostDetailProps = {
   comments: Comment[];
   loading: boolean;
   commentLoading: boolean;
+  onDeleteComment: (comment: Comment) => void;
+  deleting: string;
 };
 
 const MobilePostDetail: React.FC<MobilePostDetailProps> = ({
@@ -32,6 +34,8 @@ const MobilePostDetail: React.FC<MobilePostDetailProps> = ({
   comments,
   loading,
   commentLoading,
+  onDeleteComment,
+  deleting,
 }) => {
   return (
     <Stack
@@ -147,7 +151,13 @@ const MobilePostDetail: React.FC<MobilePostDetailProps> = ({
         </InputGroup>
       </Flex>
 
-      <Comments post={post} comments={comments} loading={commentLoading} />
+      <Comments
+        post={post}
+        comments={comments}
+        loading={commentLoading}
+        onDeleteComment={onDeleteComment}
+        deleting={deleting}
+      />
     </Stack>
   );
 };
