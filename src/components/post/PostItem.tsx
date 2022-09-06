@@ -80,6 +80,8 @@ const PostItem: React.FC<PostItemProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
+  // console.log(comments);
+
   const hasLiked = postStateValue.likes.find((like) => like.postId === post.id);
 
   return (

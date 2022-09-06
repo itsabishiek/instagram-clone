@@ -1,6 +1,8 @@
 import { Avatar, Box, Button, Flex, Text } from "@chakra-ui/react";
 import moment from "moment";
 import React from "react";
+import { useRecoilValue } from "recoil";
+import { userDataState } from "../../atoms/userDataAtom";
 import { Comment } from "../../hooks/usePosts";
 
 type CommentItemProps = {
@@ -14,6 +16,8 @@ const CommentItem: React.FC<CommentItemProps> = ({
   onDeleteComment,
   deleting,
 }) => {
+  const userStateValue = useRecoilValue(userDataState);
+
   return (
     <Flex p="8px 12px 8px 12px" align="left" justify="space-between">
       <Flex align="left">
@@ -41,20 +45,23 @@ const CommentItem: React.FC<CommentItemProps> = ({
             >
               Reply
             </Text>
-            <Button
-              variant="shareButton"
-              fontSize="8pt"
-              letterSpacing={0.1}
-              cursor="pointer"
-              fontWeight={600}
-              color="#8e8e8e"
-              h="inherit"
-              mr={3}
-              onClick={() => onDeleteComment(comment)}
-              isLoading={deleting === comment.id}
-            >
-              Delete
-            </Button>
+
+            {userStateValue.userData.username === comment.username && (
+              <Button
+                variant="shareButton"
+                fontSize="8pt"
+                letterSpacing={0.1}
+                cursor="pointer"
+                fontWeight={600}
+                color="#8e8e8e"
+                h="inherit"
+                mr={3}
+                onClick={() => onDeleteComment(comment)}
+                isLoading={deleting === comment.id}
+              >
+                Delete
+              </Button>
+            )}
           </Flex>
         </Box>
       </Flex>

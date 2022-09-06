@@ -28,8 +28,6 @@ const Comments: React.FC<CommentsProps> = ({
   onDeleteComment,
   deleting,
 }) => {
-  console.log(comments);
-
   return (
     <Stack
       h={{ base: "unset", md: "250px" }}

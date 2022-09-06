@@ -27,6 +27,10 @@ const useUserData = () => {
         ...prev,
         userData: userData[0] as UserData,
       }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        currUser: userData[0] as UserData,
+      }));
     } catch (error) {
       console.log("getUserData Error", error);
     }

@@ -167,7 +167,7 @@ const usePosts = () => {
         name: userStateValue.userData.fullname,
         username: userStateValue.userData.username,
         postId: postStateValue.selectedPost?.id as string,
-        profileImg: userStateValue.userData.imageURL,
+        profileImg: userStateValue.userData?.imageURL || "",
         comment: commentText,
         createdAt: serverTimestamp() as Timestamp,
       };

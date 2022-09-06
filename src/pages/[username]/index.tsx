@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -62,11 +63,36 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     setLoading(false);
   };
 
+  const getUserData = async (user: User) => {
+    setLoading(true);
+    try {
+      const userQuery = query(
+        collection(firestore, "users"),
+        where("uid", "==", user.uid)
+      );
+      const userDoc = await getDocs(userQuery);
+      const userData = userDoc.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        currUser: userData[0] as UserData,
+      }));
+    } catch (error) {
+      console.log("getUserData Error", error);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     setUserStateValue((prev) => ({
       ...prev,
       userData: userData,
     }));
+    if (user) {
+      getUserData(user);
+    }
     getUserPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
@@ -74,6 +100,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   if (!userData) {
     return <PageNotFound />;
   }
+
+  console.log(userData);
 
   return (
     <>
