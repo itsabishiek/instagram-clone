@@ -17,7 +17,7 @@ export type UserData = {
   phoneNumber?: string;
 };
 
-export type following = {
+export type Following = {
   username: string;
   profileImg: string;
 };
@@ -25,7 +25,8 @@ export type following = {
 interface UserState {
   userData: UserData;
   currUser: UserData;
-  following: following[];
+  following: Following[];
+  followingFetched: boolean;
   posts: Post[];
   postsFetched: boolean;
   postDeleted: boolean;
@@ -35,6 +36,7 @@ const defaultUserDataState: UserState = {
   userData: {} as UserData,
   currUser: {} as UserData,
   following: [],
+  followingFetched: false,
   posts: [],
   postsFetched: false,
   postDeleted: false,

@@ -1,17 +1,42 @@
-import { doc, increment, writeBatch } from "firebase/firestore";
-import { useState } from "react";
+import {
+  collection,
+  doc,
+  getDocs,
+  increment,
+  writeBatch,
+} from "firebase/firestore";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
-import { UserData, userDataState } from "../atoms/userDataAtom";
-import { firestore } from "../firebase/clientApp";
+import { Following, UserData, userDataState } from "../atoms/userDataAtom";
+import { auth, firestore } from "../firebase/clientApp";
 
 const useFollow = () => {
-  const [loading, setLoading] = useState(false);
+  const [user] = useAuthState(auth);
+  const [loadingFollow, setLoadingFollow] = useState(false);
   const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
+  const router = useRouter();
 
-  const onFollowOrUnfollowAccount = async () => {};
+  const onFollowOrUnfollowAccount = async (
+    userData: UserData,
+    isJoined: boolean
+  ) => {
+    if (!user) {
+      router.push("/login");
+      return;
+    }
+
+    if (isJoined) {
+      onUnfollowAccount(userData);
+      return;
+    }
+
+    onFollowAccount(userData);
+  };
 
   const onFollowAccount = async (userData: UserData) => {
-    setLoading(true);
+    setLoadingFollow(true);
     try {
       const batch = writeBatch(firestore);
 
@@ -47,26 +72,74 @@ const useFollow = () => {
         ...prev,
         following: [...prev.following, newFollowing],
       }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        userData: {
+          ...prev.userData,
+          followers: prev.userData.followers + 1,
+        },
+      }));
     } catch (error) {
       console.log("onFollowAccount Error", error);
     }
-    setLoading(false);
+    setLoadingFollow(false);
   };
 
-  const onUnfollowAccount = async () => {
-    setLoading(true);
+  const onUnfollowAccount = async (userData: UserData) => {
+    setLoadingFollow(true);
     try {
+      const batch = writeBatch(firestore);
+
+      const followingDocRef = doc(
+        firestore,
+        `users/${userStateValue.currUser.username}/following`,
+        userData.username
+      );
+      batch.delete(followingDocRef);
+
+      const usersDocRef = doc(
+        firestore,
+        "users",
+        userStateValue.currUser.username
+      );
+
+      // update the following and followers count by -1
+      batch.update(usersDocRef, {
+        following: increment(-1),
+      });
+      const targetUserDocRef = doc(firestore, "users", userData.username);
+      batch.update(targetUserDocRef, {
+        followers: increment(-1),
+      });
+
+      await batch.commit();
+
+      // update client recoil state
+      setUserStateValue((prev) => ({
+        ...prev,
+        following: prev.following.filter(
+          (item) => item.username !== userData.username
+        ),
+      }));
+      setUserStateValue((prev) => ({
+        ...prev,
+        userData: {
+          ...prev.userData,
+          followers: prev.userData.followers - 1,
+        },
+      }));
     } catch (error) {
       console.log("onUnfollowAccount Error", error);
     }
-    setLoading(false);
+    setLoadingFollow(false);
   };
 
   return {
+    userStateValue,
+    setUserStateValue,
     onFollowOrUnfollowAccount,
-    onFollowAccount,
-    onUnfollowAccount,
-    loading,
+    loadingFollow,
+    setLoadingFollow,
   };
 };
 export default useFollow;

@@ -25,10 +25,11 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
 import safeJsonStringify from "safe-json-stringify";
 import { Post } from "../../atoms/postsAtom";
-import { UserData, userDataState } from "../../atoms/userDataAtom";
+import { Following, UserData, userDataState } from "../../atoms/userDataAtom";
 import PageNotFound from "../../components/PageNotFound";
 import ProfileTabs from "../../components/tabs/ProfileTabs";
 import { auth, firestore } from "../../firebase/clientApp";
+import useFollow from "../../hooks/useFollow";
 
 type ProfilePageProps = {
   userData: UserData;
@@ -36,8 +37,57 @@ type ProfilePageProps = {
 
 const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   const [user] = useAuthState(auth);
-  const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
   const [loading, setLoading] = useState(false);
+  const {
+    userStateValue,
+    setUserStateValue,
+    onFollowOrUnfollowAccount,
+    loadingFollow,
+    setLoadingFollow,
+  } = useFollow();
+
+  const isJoined = !!userStateValue?.following.find(
+    (item) => item.username === userData.username
+  );
+
+  console.log(isJoined);
+
+  const getFollowingAccount = async () => {
+    setLoadingFollow(true);
+    try {
+      // get /following account snippet
+      const followingDocs = await getDocs(
+        collection(
+          firestore,
+          `users/${userStateValue.currUser.username}/following`
+        )
+      );
+      const following = followingDocs.docs.map((doc) => doc.data());
+
+      setUserStateValue((prev) => ({
+        ...prev,
+        following: following as Following[],
+        followingFetched: true,
+      }));
+    } catch (error) {
+      console.log("getFollowingAccount Error", error);
+    }
+    setLoadingFollow(false);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setUserStateValue((prev) => ({
+        ...prev,
+        following: [],
+        followingFetched: false,
+      }));
+    }
+    getFollowingAccount();
+    console.log(userStateValue.following);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
 
   const getUserPosts = async () => {
     setLoading(true);
@@ -101,7 +151,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     return <PageNotFound />;
   }
 
-  console.log(userData);
+  // console.log(userData);
 
   return (
     <>
@@ -202,8 +252,14 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   </Button>
                 </Link>
               ) : (
-                <Button h="30px" w="150px">
-                  Follow
+                <Button
+                  h="30px"
+                  w="150px"
+                  variant={isJoined ? "outline" : "solid"}
+                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
+                  isLoading={loadingFollow}
+                >
+                  {isJoined ? "Following" : "Follow"}
                 </Button>
               )}
             </Stack>
@@ -238,8 +294,15 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   </Button>
                 </Link>
               ) : (
-                <Button h="30px" w="120px" mr={2}>
-                  Follow
+                <Button
+                  h="30px"
+                  w="120px"
+                  mr={2}
+                  variant={isJoined ? "outline" : "solid"}
+                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
+                  isLoading={loadingFollow}
+                >
+                  {isJoined ? "Following" : "Follow"}
                 </Button>
               )}
 
