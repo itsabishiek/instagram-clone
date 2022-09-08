@@ -18,6 +18,7 @@ export type UserData = {
 };
 
 export type Following = {
+  id: string;
   username: string;
   profileImg: string;
 };
@@ -26,7 +27,6 @@ interface UserState {
   userData: UserData;
   currUser: UserData;
   following: Following[];
-  followingFetched: boolean;
   posts: Post[];
   postsFetched: boolean;
   postDeleted: boolean;
@@ -35,8 +35,7 @@ interface UserState {
 const defaultUserDataState: UserState = {
   userData: {} as UserData,
   currUser: {} as UserData,
-  following: [],
-  followingFetched: false,
+  following: [] as Following[],
   posts: [],
   postsFetched: false,
   postDeleted: false,

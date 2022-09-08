@@ -40,17 +40,19 @@ const useFollow = () => {
     try {
       const batch = writeBatch(firestore);
 
-      // create a new following user
-      const newFollowing = {
-        username: userData.username,
-        profileImg: userData?.imageURL || "",
-      };
-
       const followingDocRef = doc(
         firestore,
         `users/${userStateValue.currUser.username}/following`,
         userData.username
       );
+
+      // create a new following user
+      const newFollowing = {
+        id: followingDocRef.id,
+        username: userData.username,
+        profileImg: userData?.imageURL || "",
+      };
+
       batch.set(followingDocRef, newFollowing);
 
       const usersDocRef = doc(
@@ -133,6 +135,42 @@ const useFollow = () => {
     }
     setLoadingFollow(false);
   };
+
+  const getFollowingAccount = async () => {
+    setLoadingFollow(true);
+    try {
+      // get /following account snippet
+      const followingDocs = await getDocs(
+        collection(
+          firestore,
+          `users/${userStateValue.currUser.username}/following`
+        )
+      );
+      const following = followingDocs.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setUserStateValue((prev) => ({
+        ...prev,
+        following: following as Following[],
+      }));
+    } catch (error) {
+      console.log("getFollowingAccount Error", error);
+    }
+    setLoadingFollow(false);
+  };
+
+  useEffect(() => {
+    if (!user) {
+      setUserStateValue((prev) => ({
+        ...prev,
+        following: [],
+      }));
+    }
+    getFollowingAccount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return {
     userStateValue,

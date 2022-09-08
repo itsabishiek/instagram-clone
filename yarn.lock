@@ -1429,6 +1429,14 @@
   dependencies:
     tslib "^2.4.0"
 
+"@tanem/react-nprogress@^5.0.12":
+  version "5.0.12"
+  resolved "https://registry.yarnpkg.com/@tanem/react-nprogress/-/react-nprogress-5.0.12.tgz#f7ad561c6ba99e620271bec31d5248cc71e6720f"
+  integrity sha512-Suq0JYD5iX8snFnnF3Dm+Ho24Oe9S+revqkPIa7YuTb3JvVx3xWfgf5hzTVGhq4DPcLxUz40P0zdRaePfSXA0A==
+  dependencies:
+    "@babel/runtime" "^7.18.9"
+    hoist-non-react-statics "^3.3.2"
+
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
@@ -2499,7 +2507,7 @@ hey-listen@^1.0.8:
   resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
   integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
 
-hoist-non-react-statics@^3.3.1:
+hoist-non-react-statics@^3.3.1, hoist-non-react-statics@^3.3.2:
   version "3.3.2"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz#ece0acaf71d62c2969c2ec59feff42a4b1a85b45"
   integrity sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==

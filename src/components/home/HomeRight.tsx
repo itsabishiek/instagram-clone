@@ -3,22 +3,12 @@ import {
   Box,
   Button,
   Flex,
-  Image,
-  Skeleton,
+  SkeletonText,
   Stack,
   Text,
-  Link,
-  SkeletonText,
-  SkeletonCircle,
 } from "@chakra-ui/react";
-import {
-  collection,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, getDocs, limit, query, where } from "firebase/firestore";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { UserData } from "../../atoms/userDataAtom";
@@ -125,18 +115,17 @@ const HomeRight: React.FC<HomeRightProps> = () => {
               ) : (
                 <Flex pb={2} align="center" justify="space-between">
                   <Flex align="center">
-                    <Link
-                      href={`/${item.username}`}
-                      _hover={{ textDecor: "none" }}
-                    >
-                      <Avatar src={item.imageURL} size="sm" mr={3} />
+                    <Link href={`/${item.username}`}>
+                      <Avatar
+                        src={item.imageURL}
+                        size="sm"
+                        mr={3}
+                        cursor="pointer"
+                      />
                     </Link>
                     <Flex flexDir="column" justify="center">
-                      <Link
-                        href={`/${item.username}`}
-                        _hover={{ textDecor: "none" }}
-                      >
-                        <Text fontSize="10pt" fontWeight={600}>
+                      <Link href={`/${item.username}`}>
+                        <Text fontSize="10pt" fontWeight={600} cursor="pointer">
                           {item.username}
                         </Text>
                       </Link>

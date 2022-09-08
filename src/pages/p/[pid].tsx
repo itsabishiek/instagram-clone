@@ -135,6 +135,7 @@ const PostPage: React.FC<PostPageProps> = () => {
                 <Box
                   w={{ base: "100%", md: "60%" }}
                   display={loading ? "none" : "flex"}
+                  alignItems="center"
                   justifyContent="center"
                   bg="white"
                   border={{ base: "none", md: "1px solid" }}

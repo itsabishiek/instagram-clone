@@ -11,8 +11,7 @@ type BottomNavbarProps = {
 };
 
 const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
-  const { userStateValue, loading } = useUserData();
-  const userData = userStateValue?.userData;
+  const { userStateValue } = useUserData();
 
   return (
     <Tabs
@@ -154,7 +153,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
         <Tab>
           {user ? (
             <UserMenu>
-              <Avatar src={userData?.imageURL} size="xs" />
+              <Avatar src={userStateValue.currUser?.imageURL} size="xs" />
             </UserMenu>
           ) : (
             <Link href="/login">

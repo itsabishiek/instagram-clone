@@ -43,51 +43,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     setUserStateValue,
     onFollowOrUnfollowAccount,
     loadingFollow,
-    setLoadingFollow,
   } = useFollow();
 
   const isJoined = !!userStateValue?.following.find(
     (item) => item.username === userData.username
   );
-
-  console.log(isJoined);
-
-  const getFollowingAccount = async () => {
-    setLoadingFollow(true);
-    try {
-      // get /following account snippet
-      const followingDocs = await getDocs(
-        collection(
-          firestore,
-          `users/${userStateValue.currUser.username}/following`
-        )
-      );
-      const following = followingDocs.docs.map((doc) => doc.data());
-
-      setUserStateValue((prev) => ({
-        ...prev,
-        following: following as Following[],
-        followingFetched: true,
-      }));
-    } catch (error) {
-      console.log("getFollowingAccount Error", error);
-    }
-    setLoadingFollow(false);
-  };
-
-  useEffect(() => {
-    if (!user) {
-      setUserStateValue((prev) => ({
-        ...prev,
-        following: [],
-        followingFetched: false,
-      }));
-    }
-    getFollowingAccount();
-    console.log(userStateValue.following);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid]);
 
   const getUserPosts = async () => {
     setLoading(true);
@@ -216,6 +176,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   role="img"
                   viewBox="0 0 24 24"
                   width="24"
+                  cursor="pointer"
                 >
                   <circle
                     cx="12"
@@ -256,8 +217,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   h="30px"
                   w="150px"
                   variant={isJoined ? "outline" : "solid"}
-                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
                   isLoading={loadingFollow}
+                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
                 >
                   {isJoined ? "Following" : "Follow"}
                 </Button>
@@ -299,8 +260,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   w="120px"
                   mr={2}
                   variant={isJoined ? "outline" : "solid"}
-                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
                   isLoading={loadingFollow}
+                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
                 >
                   {isJoined ? "Following" : "Follow"}
                 </Button>
@@ -314,6 +275,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                 role="img"
                 viewBox="0 0 24 24"
                 width="24"
+                cursor="pointer"
               >
                 <circle
                   cx="12"

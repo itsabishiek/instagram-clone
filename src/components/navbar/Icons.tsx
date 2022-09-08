@@ -5,8 +5,7 @@ import UserMenu from "../menus/UserMenu";
 import PostUploadModal from "../modals/PostUploadModal";
 
 const Icons: React.FC = () => {
-  const { userStateValue, loading } = useUserData();
-  const userData = userStateValue?.userData;
+  const { userStateValue } = useUserData();
 
   return (
     <Flex align="center" gap={{ md: 6 }}>
@@ -175,7 +174,7 @@ const Icons: React.FC = () => {
 
       <Box display={{ base: "none", md: "flex" }}>
         <UserMenu>
-          <Avatar src={userData?.imageURL} size="xs" />
+          <Avatar src={userStateValue.currUser?.imageURL} size="xs" />
         </UserMenu>
       </Box>
     </Flex>

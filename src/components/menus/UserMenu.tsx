@@ -1,12 +1,10 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
+  Divider,
   Menu,
   MenuButton,
-  Button,
-  MenuList,
   MenuItem,
+  MenuList,
   Text,
-  Divider,
 } from "@chakra-ui/react";
 import { signOut } from "firebase/auth";
 import Link from "next/link";
