@@ -4,14 +4,14 @@ import {
   Button,
   Flex,
   Image,
-  Link,
   Skeleton,
   Stack,
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import moment from "moment";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -61,9 +61,9 @@ const PostItem: React.FC<PostItemProps> = ({
       collection(
         firestore,
         "users",
-        `${userStateValue.userData.username}/likes`
+        `${userStateValue.currUser.username}/likes`
       ),
-      where("username", "==", userStateValue.userData?.username)
+      where("username", "==", userStateValue.currUser?.username)
     );
     const likedPosts = await getDocs(likePostQuery);
     const likes = likedPosts.docs.map((doc) => doc.data());
@@ -101,10 +101,7 @@ const PostItem: React.FC<PostItemProps> = ({
             <Avatar src={post.profileImg} w="32px" h="32px" mr={3} />
           </Link>
           <Flex flexDir="column" justify="center">
-            <Link
-              href={`/${post.username}`}
-              _hover={{ textDecoration: "none" }}
-            >
+            <Link href={`/${post.username}`}>
               <Text fontSize="10pt" fontWeight={600}>
                 {post.username}
               </Text>
@@ -259,7 +256,7 @@ const PostItem: React.FC<PostItemProps> = ({
           {post.caption}
         </Text>
 
-        <Link href={`/p/${post.id}`} _hover={{ textDecor: "none" }}>
+        <Link href={`/p/${post.id}`}>
           <Text
             fontSize={{ base: "13px", md: "14px" }}
             color="#8e8e8e"

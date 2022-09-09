@@ -20,6 +20,7 @@ import {
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState } from "recoil";
@@ -44,10 +45,32 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     onFollowOrUnfollowAccount,
     loadingFollow,
   } = useFollow();
+  const { username } = useRouter().query;
 
   const isJoined = !!userStateValue?.following.find(
     (item) => item.username === userData.username
   );
+
+  const getFollowingData = async () => {
+    try {
+      const followingDocs = await getDocs(
+        collection(
+          firestore,
+          "users",
+          `${userStateValue.currUser.username}/following`
+        )
+      );
+      const following = followingDocs.docs.map((doc) => doc.data());
+      console.log(following);
+    } catch (error) {
+      console.log("getFollowingData Error", error);
+    }
+  };
+
+  useEffect(() => {
+    if (username) getFollowingData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [username]);
 
   const getUserPosts = async () => {
     setLoading(true);

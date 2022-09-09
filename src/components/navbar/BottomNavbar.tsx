@@ -1,10 +1,11 @@
-import { Avatar, Box, Link, Tab, TabList, Tabs } from "@chakra-ui/react";
+import { Avatar, Box, Tab, TabList, Tabs } from "@chakra-ui/react";
 import { User } from "firebase/auth";
 import React from "react";
 import useUserData from "../../hooks/useUserData";
 import UserMenu from "../menus/UserMenu";
 import PostUploadModal from "../modals/PostUploadModal";
 import { BiLogIn } from "react-icons/bi";
+import Link from "next/link";
 
 type BottomNavbarProps = {
   user?: User | null;

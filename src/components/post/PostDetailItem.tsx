@@ -4,7 +4,6 @@ import {
   Button,
   Flex,
   Image,
-  Link,
   Skeleton,
   Stack,
   Text,
@@ -21,6 +20,7 @@ import { auth, firestore } from "../../firebase/clientApp";
 import PostMenu from "../menus/PostMenu";
 import Comments from "../comments/Comments";
 import { Comment } from "../../hooks/usePosts";
+import Link from "next/link";
 
 type PostItemProps = {
   post: Post;
@@ -109,10 +109,7 @@ const PostItem: React.FC<PostItemProps> = ({
             <Avatar src={post.profileImg} w="32px" h="32px" mr={3} />
           </Link>
           <Flex flexDir="column" justify="center">
-            <Link
-              href={`/${post.username}`}
-              _hover={{ textDecoration: "none" }}
-            >
+            <Link href={`/${post.username}`}>
               <Text fontSize="10pt" fontWeight={600}>
                 {post.username}
               </Text>

@@ -11,6 +11,7 @@ import {
 import React from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FiMoreHorizontal } from "react-icons/fi";
+import { MdOutlineReport } from "react-icons/md";
 import { Post } from "../../atoms/postsAtom";
 import DeletePostModal from "../modals/DeletePostModal";
 
@@ -55,12 +56,34 @@ const PostMenu: React.FC<PostMenuProps> = ({
           >
             <DeletePostModal post={post} onDeletePost={onDeletePost}>
               <Flex align="center">
-                <Icon as={AiOutlineDelete} fontSize={20} mr={2} pb={1} />
-                <Text fontWeight={600} fontSize="10pt">
+                <Icon
+                  as={AiOutlineDelete}
+                  fontSize={20}
+                  mr={2}
+                  pb={1}
+                  color="#ed4956"
+                />
+                <Text fontWeight={600} fontSize="10pt" color="#ed4956">
                   Delete Post
                 </Text>
               </Flex>
             </DeletePostModal>
+          </MenuItem>
+        )}
+        {!userIsCreator && (
+          <MenuItem _hover={{ bg: "gray.200" }} p="10px">
+            <Flex align="center">
+              <Icon
+                as={MdOutlineReport}
+                fontSize={22}
+                mr={2}
+                pb={1}
+                color="#ed4956"
+              />
+              <Text fontWeight={600} fontSize="10pt" color="#ed4956">
+                Report
+              </Text>
+            </Flex>
           </MenuItem>
         )}
         <MenuItem _hover={{ bg: "gray.200" }} p="10px">

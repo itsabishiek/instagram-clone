@@ -1,24 +1,23 @@
 import {
-  Tabs,
-  TabList,
-  Tab,
-  Text,
-  TabPanels,
-  TabPanel,
-  Image,
-  Stack,
-  Flex,
   Box,
+  Flex,
   Grid,
   GridItem,
-  Spinner,
   Icon,
+  Image,
+  Spinner,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
 } from "@chakra-ui/react";
-import React from "react";
-import { Post } from "../../atoms/postsAtom";
-import { BsFillChatFill, BsHeartFill, BsPlayFill } from "react-icons/bs";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import React from "react";
+import { BsFillChatFill, BsHeartFill } from "react-icons/bs";
+import { Post } from "../../atoms/postsAtom";
 
 type ProfileTabsProps = {
   posts: Post[];
