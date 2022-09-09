@@ -9,7 +9,7 @@ type BarProps = {
 const Bar: React.FC<BarProps> = ({ animationDuration, progress }) => {
   return (
     <Box
-      bg="linear-gradient(45deg, rgb(43, 62, 167), rgb(255,230,0), #ffa600, rgb(255,0,128), #d4217b)"
+      bg="linear-gradient(45deg, rgb(43, 62, 167), rgb(255,230,0), rgb(255,0,128), #ffa600, #d4217b)"
       h={1}
       w="100%"
       pos="fixed"
