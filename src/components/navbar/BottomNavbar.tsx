@@ -27,8 +27,8 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
       variant="enclosed"
       zIndex={10001}
     >
-      <TabList>
-        <Tab>
+      <TabList h="49px">
+        <Tab border="none">
           <Link href="/">
             <svg
               aria-label="Home"
@@ -51,8 +51,8 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
           </Link>
         </Tab>
 
-        <Tab>
-          <Link href="/search">
+        <Tab border="none">
+          <Link href="/explore">
             <svg
               aria-label="Search"
               color="#262626"
@@ -86,7 +86,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
           </Link>
         </Tab>
 
-        <Tab>
+        <Tab border="none">
           <PostUploadModal>
             <Box>
               <svg
@@ -134,7 +134,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
           </PostUploadModal>
         </Tab>
 
-        <Tab>
+        <Tab border="none">
           <Link href="/">
             <svg
               aria-label="Activity Feed"
@@ -151,7 +151,7 @@ const BottomNavbar: React.FC<BottomNavbarProps> = ({ user }) => {
           </Link>
         </Tab>
 
-        <Tab>
+        <Tab border="none">
           {user ? (
             <UserMenu>
               <Avatar src={userStateValue.currUser?.imageURL} size="xs" />

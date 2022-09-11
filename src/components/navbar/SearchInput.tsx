@@ -1,10 +1,12 @@
-import { SearchIcon } from "@chakra-ui/icons";
 import { Flex, Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 
 type SearchInputProps = {};
 
 const SearchInput: React.FC<SearchInputProps> = () => {
+  const router = useRouter();
+
   return (
     <Flex
       flexGrow={1}
@@ -56,6 +58,7 @@ const SearchInput: React.FC<SearchInputProps> = () => {
           _focus={{ outline: "none" }}
           focusBorderColor="none"
           h="36px"
+          onFocus={() => router.push("/explore")}
         />
       </InputGroup>
     </Flex>

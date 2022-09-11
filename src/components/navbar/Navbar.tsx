@@ -16,7 +16,7 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       align="center"
       justify="center"
       p="0px 20px"
-      h="60px"
+      h={{ base: "44px", md: "60px" }}
       bg="white"
       border="1px solid"
       borderColor="gray.300"
@@ -26,18 +26,9 @@ const Navbar: React.FC<NavbarProps> = ({ user }) => {
       zIndex={999}
     >
       <Flex width="935px">
-        {user && (
-          <Flex
-            display={{ base: "flex", md: "none" }}
-            align="center"
-            flex={{ base: 1, md: "none" }}
-          >
-            <AiOutlineCamera fontSize="25px" />
-          </Flex>
-        )}
         <Flex
           flex={{ base: 2.3, md: 1 }}
-          justify={{ base: user ? "right" : "left", md: "left" }}
+          justify={{ base: "left", md: "left" }}
           mt={2}
         >
           <Link href="/">

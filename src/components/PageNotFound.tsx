@@ -20,10 +20,10 @@ const PageNotFound: React.FC = () => {
       <Flex flexDir="column" align="center" p="40px 30px">
         <Text
           fontWeight={700}
-          fontSize="16pt"
+          fontSize={{ base: "13pt", md: "16pt" }}
         >{`Sorry, this page is'nt available`}</Text>
 
-        <Text fontSize="11.5pt" mt={6}>
+        <Text fontSize={{ base: "10pt", md: "11.5pt" }} mt={6}>
           The link you followed may be broken, or the page may have been
           removed.{" "}
           <span

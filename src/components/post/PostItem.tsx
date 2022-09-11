@@ -98,11 +98,17 @@ const PostItem: React.FC<PostItemProps> = ({
       <Flex align="center" justify="space-between">
         <Flex align="center" m="8px 4px 8px 12px">
           <Link href={`/${post.username}`}>
-            <Avatar src={post.profileImg} w="32px" h="32px" mr={3} />
+            <Avatar
+              src={post.profileImg}
+              w="32px"
+              h="32px"
+              mr={3}
+              cursor="pointer"
+            />
           </Link>
           <Flex flexDir="column" justify="center">
             <Link href={`/${post.username}`}>
-              <Text fontSize="10pt" fontWeight={600}>
+              <Text fontSize="10pt" fontWeight={600} cursor="pointer">
                 {post.username}
               </Text>
             </Link>
