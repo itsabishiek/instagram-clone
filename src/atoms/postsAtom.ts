@@ -24,17 +24,21 @@ export type LikePost = {
 interface PostState {
   posts: Post[];
   likes: LikePost[];
+  saved: Post[];
   hasLiked: boolean;
   postDeleted: boolean;
   selectedPost: Post | null;
+  allPosts: Post[];
 }
 
 const defaultPostState: PostState = {
   posts: [],
   likes: [],
+  saved: [],
   hasLiked: false,
   postDeleted: false,
   selectedPost: null,
+  allPosts: [],
 };
 
 export const postState = atom<PostState>({

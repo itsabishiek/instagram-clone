@@ -245,6 +245,27 @@ const usePosts = () => {
     setDeleting("");
   };
 
+  const onSavePost = async (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    username: string
+  ) => {
+    event.preventDefault();
+
+    if (!user) {
+      router.push("/");
+      return;
+    }
+
+    try {
+      const hasSaved = postStateValue.saved.find((item) => item.id === post.id);
+
+      const batch = writeBatch(firestore);
+    } catch (error) {
+      console.log("onSavePost Error", error);
+    }
+  };
+
   return {
     postStateValue,
     setPostStateValue,

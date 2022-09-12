@@ -47,10 +47,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   } = useFollow();
   const { username } = useRouter().query;
 
-  const isJoined = !!userStateValue?.following.find(
-    (item) => item.username === userData.username
-  );
-
   const getFollowingData = async () => {
     try {
       const followingDocs = await getDocs(
@@ -133,6 +129,10 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
   if (!userData) {
     return <PageNotFound />;
   }
+
+  const isJoined = !!userStateValue?.following.find(
+    (item) => item.username === userData.username
+  );
 
   // console.log(userData);
 

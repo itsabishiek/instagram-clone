@@ -18,6 +18,7 @@ import Link from "next/link";
 import React from "react";
 import { BsFillChatFill, BsHeartFill } from "react-icons/bs";
 import { Post } from "../../atoms/postsAtom";
+import Posts from "../post/Posts";
 
 type ProfileTabsProps = {
   posts: Post[];
@@ -244,60 +245,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                 ) : (
                   <Grid templateColumns="repeat(3, 1fr)" gap={6} p="20px 0px">
                     {posts?.map((post) => (
-                      <Link href={`/p/${post.id}`} key={post.id}>
-                        <GridItem>
-                          <Box
-                            pos="relative"
-                            w="293px"
-                            h="293px"
-                            cursor="pointer"
-                          >
-                            <Box
-                              pos="absolute"
-                              top={0}
-                              left={0}
-                              w="100%"
-                              h="100%"
-                              bg="rgba(0,0,0,0.4)"
-                              opacity={0}
-                              _hover={{ opacity: 1 }}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                            >
-                              <Flex align="center" mr={6}>
-                                <Icon
-                                  as={BsHeartFill}
-                                  color="#ffffff"
-                                  fontSize="20px"
-                                  mr={2}
-                                />
-                                <Text color="#ffffff">
-                                  {post.numberOfLikes}
-                                </Text>
-                              </Flex>
-                              <Flex align="center">
-                                <Icon
-                                  as={BsFillChatFill}
-                                  color="#ffffff"
-                                  fontSize="20px"
-                                  mr={2}
-                                />
-                                <Text color="#ffffff">
-                                  {post.numberOfComments}
-                                </Text>
-                              </Flex>
-                            </Box>
-                            <Image
-                              src={post.imageURL}
-                              alt=""
-                              w="100%"
-                              h="100%"
-                              objectFit="cover"
-                            />
-                          </Box>
-                        </GridItem>
-                      </Link>
+                      <Posts key={post.id} post={post} />
                     ))}
                   </Grid>
                 )}
@@ -550,60 +498,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                 ) : (
                   <Grid templateColumns="repeat(3, 1fr)" p="0px">
                     {posts?.map((post) => (
-                      <Link href={`/p/${post.id}`} key={post.id}>
-                        <GridItem key={post.id}>
-                          <Box
-                            pos="relative"
-                            w="130px"
-                            h="130px"
-                            cursor="pointer"
-                          >
-                            <Box
-                              pos="absolute"
-                              top={0}
-                              left={0}
-                              w="100%"
-                              h="100%"
-                              bg="rgba(0,0,0,0.4)"
-                              opacity={0}
-                              _hover={{ opacity: 1 }}
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
-                            >
-                              <Flex align="center" mr={6}>
-                                <Icon
-                                  as={BsHeartFill}
-                                  color="#ffffff"
-                                  fontSize="20px"
-                                  mr={2}
-                                />
-                                <Text color="#ffffff">
-                                  {post.numberOfLikes}
-                                </Text>
-                              </Flex>
-                              <Flex align="center">
-                                <Icon
-                                  as={BsFillChatFill}
-                                  color="#ffffff"
-                                  fontSize="20px"
-                                  mr={2}
-                                />
-                                <Text color="#ffffff">
-                                  {post.numberOfComments}
-                                </Text>
-                              </Flex>
-                            </Box>
-                            <Image
-                              src={post.imageURL}
-                              alt=""
-                              w="100%"
-                              h="100%"
-                              objectFit="cover"
-                            />
-                          </Box>
-                        </GridItem>
-                      </Link>
+                      <Posts key={post.id} post={post} />
                     ))}
                   </Grid>
                 )}

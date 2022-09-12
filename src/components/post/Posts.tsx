@@ -1,55 +1,60 @@
-import { Avatar, Flex, Image, Text } from "@chakra-ui/react";
-import { collection, doc, getDocs, query } from "firebase/firestore";
-import React, { useEffect } from "react";
-import { useRecoilState } from "recoil";
+import { Box, Flex, GridItem, Icon, Image, Text } from "@chakra-ui/react";
+import Link from "next/link";
+import React from "react";
+import { BsFillChatFill, BsHeartFill } from "react-icons/bs";
 import { Post } from "../../atoms/postsAtom";
-import { userDataState } from "../../atoms/userDataAtom";
-import { firestore } from "../../firebase/clientApp";
 
-type PostsProps = {};
+type PostsProps = {
+  post: Post;
+};
 
-const Posts: React.FC<PostsProps> = () => {
-  const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
-  const postsData = userStateValue?.posts;
-
-  const getPosts = async () => {
-    const userPostDocRef = query(
-      collection(firestore, `/users/${userStateValue.userData.uid}/posts`)
-    );
-    const postDocs = await getDocs(userPostDocRef);
-    const posts = postDocs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    setUserStateValue((prev) => ({
-      ...prev,
-      posts: posts as Post[],
-    }));
-  };
-
-  useEffect(() => {
-    getPosts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userStateValue.userData.uid]);
-
-  //   console.log(userStateValue);
-
+const Posts: React.FC<PostsProps> = ({ post }) => {
   return (
-    <Flex mt={5}>
-      {postsData?.map((post) => (
-        <Flex flexDir="column" key={post.id}>
-          <Flex align="center">
-            <Avatar src={post.profileImg} mr={2} />
-            <Text fontSize="10pt">{post.username}</Text>
-          </Flex>
+    <Link href={`/p/${post.id}`} key={post.id}>
+      <GridItem display="flex" w="100%" justifyContent="center">
+        <Box
+          pos="relative"
+          w={{ base: "130px", md: "293px" }}
+          h={{ base: "130px", md: "293px" }}
+          cursor="pointer"
+        >
+          <Box
+            pos="absolute"
+            top={0}
+            left={0}
+            w="100%"
+            h="100%"
+            bg="rgba(0,0,0,0.4)"
+            opacity={0}
+            _hover={{ opacity: 1 }}
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Flex align="center" mr={6}>
+              <Icon as={BsHeartFill} color="#ffffff" fontSize="20px" mr={2} />
+              <Text color="#ffffff">{post.numberOfLikes}</Text>
+            </Flex>
+            <Flex align="center">
+              <Icon
+                as={BsFillChatFill}
+                color="#ffffff"
+                fontSize="20px"
+                mr={2}
+              />
+              <Text color="#ffffff">{post.numberOfComments}</Text>
+            </Flex>
+          </Box>
           <Image
             src={post.imageURL}
             alt=""
             w="100%"
             h="100%"
-            objectFit="contain"
+            objectFit="cover"
           />
-          <Text>{post.caption}</Text>
-        </Flex>
-      ))}
-    </Flex>
+        </Box>
+      </GridItem>
+    </Link>
   );
 };
 export default Posts;
