@@ -1,15 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  Image,
-  InputGroup,
-  InputRightAddon,
-  Skeleton,
-  Stack,
-  Text,
-  Textarea,
-} from "@chakra-ui/react";
+import { Box, Flex, Image, Skeleton } from "@chakra-ui/react";
 import {
   collection,
   doc,
@@ -22,10 +11,7 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { Post } from "../../atoms/postsAtom";
-import { userDataState } from "../../atoms/userDataAtom";
-import PostLoader from "../../components/loader/PostLoader";
 import MobilePostDetail from "../../components/post/MobilePostDetail";
 import PostDetailItem from "../../components/post/PostDetailItem";
 import { firestore } from "../../firebase/clientApp";
@@ -49,12 +35,11 @@ const PostPage: React.FC<PostPageProps> = () => {
     setComments,
     onDeleteComment,
     deleting,
+    onSavePost,
   } = usePosts();
   const post = postStateValue.selectedPost;
   const router = useRouter();
   const { pid } = router.query;
-
-  console.log(post?.id);
 
   const fetchPost = async (postId: string) => {
     setLoading(true);
@@ -163,6 +148,7 @@ const PostPage: React.FC<PostPageProps> = () => {
                     commentLoading={commentLoading}
                     onDeleteComment={onDeleteComment}
                     deleting={deleting}
+                    savePost={onSavePost}
                   />
                 </Box>
               </Flex>

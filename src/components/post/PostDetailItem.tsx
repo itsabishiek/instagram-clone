@@ -3,29 +3,32 @@ import {
   Box,
   Button,
   Flex,
-  Image,
-  Skeleton,
   Stack,
   Text,
   Textarea,
 } from "@chakra-ui/react";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import moment from "moment";
-import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import React, { useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { LikePost, Post, postState } from "../../atoms/postsAtom";
 import { userDataState } from "../../atoms/userDataAtom";
 import { auth, firestore } from "../../firebase/clientApp";
-import PostMenu from "../menus/PostMenu";
-import Comments from "../comments/Comments";
 import { Comment } from "../../hooks/usePosts";
-import Link from "next/link";
+import Comments from "../comments/Comments";
+import PostMenu from "../menus/PostMenu";
 
 type PostItemProps = {
   post: Post;
   onDeletePost: (post: Post) => Promise<boolean>;
   likePost: (
+    event: React.MouseEvent<SVGElement, MouseEvent>,
+    post: Post,
+    username: string
+  ) => void;
+  savePost: (
     event: React.MouseEvent<SVGElement, MouseEvent>,
     post: Post,
     username: string
@@ -52,20 +55,21 @@ const PostItem: React.FC<PostItemProps> = ({
   commentLoading,
   onDeleteComment,
   deleting,
+  savePost,
 }) => {
   const [user] = useAuthState(auth);
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const userStateValue = useRecoilValue(userDataState);
 
   const handleLike = async () => {
-    if (userStateValue.userData.username) {
+    if (userStateValue.currUser.username) {
       const likePostQuery = query(
         collection(
           firestore,
           "users",
-          `${userStateValue.userData.username}/likes`
+          `${userStateValue.currUser.username}/likes`
         ),
-        where("username", "==", userStateValue.userData?.username)
+        where("username", "==", userStateValue.currUser?.username)
       );
       const likedPosts = await getDocs(likePostQuery);
       const likes = likedPosts.docs.map((doc) => doc.data());
@@ -76,14 +80,33 @@ const PostItem: React.FC<PostItemProps> = ({
     }
   };
 
+  const handleSavedPost = async () => {
+    const savePostQuery = query(
+      collection(
+        firestore,
+        "users",
+        `${userStateValue.currUser.username}/saved`
+      ),
+      where("creator", "==", userStateValue.currUser.username)
+    );
+    const savedPosts = await getDocs(savePostQuery);
+    const saved = savedPosts.docs.map((doc) => doc.data());
+    setPostStateValue((prev) => ({
+      ...prev,
+      saved: saved as Post[],
+    }));
+  };
+
   useEffect(() => {
-    if (user && userStateValue.userData) {
+    if (user && userStateValue.currUser) {
       handleLike();
+      handleSavedPost();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, userStateValue.userData]);
+  }, [user, userStateValue.currUser]);
 
   const hasLiked = postStateValue.likes.find((like) => like.postId === post.id);
+  const hasSaved = postStateValue.saved.find((item) => item.id === post.id);
 
   return (
     <Stack
@@ -209,7 +232,23 @@ const PostItem: React.FC<PostItemProps> = ({
             </svg>
           </Box>
         </Flex>
-        <Box _hover={{ opacity: 0.6 }}>
+
+        {hasSaved ? (
+          <svg
+            aria-label="Remove"
+            color="#262626"
+            fill="#262626"
+            height="24"
+            role="img"
+            viewBox="0 0 24 24"
+            width="24"
+            className="likeButton"
+            cursor="pointer"
+            onClick={(e) => savePost(e, post, userStateValue.currUser.username)}
+          >
+            <path d="M20 22a.999.999 0 01-.687-.273L12 14.815l-7.313 6.912A1 1 0 013 21V3a1 1 0 011-1h16a1 1 0 011 1v18a1 1 0 01-1 1z"></path>
+          </svg>
+        ) : (
           <svg
             aria-label="Save"
             color="#262626"
@@ -218,7 +257,9 @@ const PostItem: React.FC<PostItemProps> = ({
             role="img"
             viewBox="0 0 24 24"
             width="24"
+            className="likeButton"
             cursor="pointer"
+            onClick={(e) => savePost(e, post, userStateValue.currUser.username)}
           >
             <polygon
               fill="none"
@@ -229,7 +270,7 @@ const PostItem: React.FC<PostItemProps> = ({
               strokeWidth="2"
             ></polygon>
           </svg>
-        </Box>
+        )}
       </Flex>
 
       <Stack p="0px 12px" pb={{ base: 3, md: 0 }} pos="sticky" w="100%">

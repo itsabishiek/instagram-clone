@@ -137,7 +137,7 @@ const usePosts = () => {
     }
   };
 
-  const onSelectPost = (post: Post) => {
+  const onSelectPost = (post: any) => {
     if (!user) {
       router.push("/login");
       return;
@@ -261,6 +261,62 @@ const usePosts = () => {
       const hasSaved = postStateValue.saved.find((item) => item.id === post.id);
 
       const batch = writeBatch(firestore);
+      const updatedPost = { ...post };
+      const updatedPosts = [...postStateValue.posts];
+      let savedPosts = [...postStateValue.saved];
+
+      // New Save
+      if (!hasSaved) {
+        const savePostDocRef = doc(
+          collection(firestore, "users", `${username}/saved`)
+        );
+        const newSave = {
+          id: post.id,
+          userId: post.userId,
+          name: post.name,
+          creator: username,
+          username: post.username,
+          profileImg: post.profileImg || "",
+          imageURL: post.imageURL || "",
+          caption: post.caption || "",
+          location: post.location || "",
+          numberOfComments: post.numberOfComments,
+          numberOfLikes: post.numberOfLikes,
+          createdAt: post.createdAt as Timestamp,
+        };
+
+        batch.set(savePostDocRef, newSave);
+        savedPosts = [newSave, ...savedPosts];
+      } else {
+        const savePostDocRef = doc(
+          firestore,
+          "users",
+          `${username}/saved/${hasSaved.id}`
+        );
+
+        batch.delete(savePostDocRef);
+        savedPosts = savedPosts.filter((save) => save.id !== hasSaved.id);
+      }
+
+      // update the state with updated values
+      const postIndex = postStateValue.posts.findIndex(
+        (item) => item.id === post.id
+      );
+      updatedPosts[postIndex] = updatedPost;
+      setPostStateValue((prev) => ({
+        ...prev,
+        posts: updatedPosts,
+        saved: savedPosts,
+      }));
+
+      if (postStateValue.selectedPost) {
+        setPostStateValue((prev) => ({
+          ...prev,
+          selectedPost: updatedPost,
+        }));
+      }
+
+      await batch.commit();
     } catch (error) {
       console.log("onSavePost Error", error);
     }
@@ -281,6 +337,7 @@ const usePosts = () => {
     commenting,
     onDeleteComment,
     deleting,
+    onSavePost,
   };
 };
 export default usePosts;

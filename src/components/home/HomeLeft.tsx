@@ -28,6 +28,7 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
     onCreateComment,
     comments,
     setComments,
+    onSavePost,
   } = usePosts();
 
   const getPosts = async () => {
@@ -75,6 +76,7 @@ const HomeLeft: React.FC<HomeLeftProps> = ({ user }) => {
                 loading={commenting}
                 comments={comments}
                 setComments={setComments}
+                savePost={onSavePost}
               />
             )}
           </Box>

@@ -8,7 +8,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import Router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Post } from "../../atoms/postsAtom";
 
@@ -25,7 +25,8 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [deleting, setDeleting] = useState(false);
-  const { pid } = useRouter().query;
+  const router = useRouter();
+  const { pid } = router.query;
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -33,7 +34,7 @@ const DeletePostModal: React.FC<DeletePostModalProps> = ({
       await onDeletePost(post);
       onClose();
       if (pid) {
-        Router.push("/");
+        router.push("/");
       }
     } catch (error: any) {
       console.log("handleDelete Error", error);

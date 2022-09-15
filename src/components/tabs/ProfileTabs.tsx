@@ -1,9 +1,6 @@
 import {
-  Box,
   Flex,
   Grid,
-  GridItem,
-  Icon,
   Image,
   Spinner,
   Stack,
@@ -14,10 +11,13 @@ import {
   Tabs,
   Text,
 } from "@chakra-ui/react";
-import Link from "next/link";
-import React from "react";
-import { BsFillChatFill, BsHeartFill } from "react-icons/bs";
-import { Post } from "../../atoms/postsAtom";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { Post, postState } from "../../atoms/postsAtom";
+import { userDataState } from "../../atoms/userDataAtom";
+import { auth, firestore } from "../../firebase/clientApp";
 import Posts from "../post/Posts";
 
 type ProfileTabsProps = {
@@ -26,6 +26,41 @@ type ProfileTabsProps = {
 };
 
 const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
+  const [user] = useAuthState(auth);
+  const [postStateValue, setPostStateValue] = useRecoilState(postState);
+  const userStateValue = useRecoilValue(userDataState);
+  const [loading, setLoading] = useState(false);
+
+  const handleSavedPost = async () => {
+    setLoading(true);
+    try {
+      const savePostQuery = query(
+        collection(
+          firestore,
+          "users",
+          `${userStateValue.currUser.username}/saved`
+        ),
+        where("creator", "==", userStateValue.currUser.username)
+      );
+      const savedPosts = await getDocs(savePostQuery);
+      const saved = savedPosts.docs.map((doc) => doc.data());
+      setPostStateValue((prev) => ({
+        ...prev,
+        saved: saved as Post[],
+      }));
+    } catch (error) {
+      console.log("handleSavedPost Error", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user) {
+      handleSavedPost();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
   return (
     <>
       <Tabs
@@ -200,7 +235,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
         </TabList>
 
         <TabPanels>
-          <TabPanel p={0}>
+          <TabPanel p="0rem !important" m="0rem !important">
             {posts.length === 0 ? (
               <Flex
                 w="100%"
@@ -252,29 +287,61 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
               </>
             )}
           </TabPanel>
-          <TabPanel>
-            <Flex
-              flexDir="column"
-              align="center"
-              justify="center"
-              margin="60px 44px"
-            >
-              <Flex border="1px solid" borderColor="black" borderRadius="full">
-                <Image
-                  src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
-                  alt=""
-                  h="50px"
-                  w="50px"
-                  m="8px"
-                />
+          <TabPanel p="0rem !important" m="0rem !important">
+            {postStateValue.saved.length === 0 ? (
+              <Flex
+                flexDir="column"
+                align="center"
+                justify="center"
+                margin="60px 44px"
+              >
+                <Flex
+                  border="1px solid"
+                  borderColor="black"
+                  borderRadius="full"
+                >
+                  <Image
+                    src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                    alt=""
+                    h="50px"
+                    w="50px"
+                    m="8px"
+                  />
+                </Flex>
+                <Text
+                  fontWeight="light"
+                  fontSize="18pt"
+                  mt={3}
+                  mb={2}
+                  textAlign="center"
+                >
+                  Saved photos and reels
+                </Text>
+                <Text fontSize="11pt" color="black" textAlign="center">
+                  {`When photos/reels that you saved, they'll appear here.`}
+                </Text>
               </Flex>
-              <Text fontWeight="light" fontSize="18pt" mt={3} mb={2}>
-                Saved photos and reels
-              </Text>
-              <Text fontSize="11pt" color="black">
-                {`When photos/reels that you saved, they'll appear here.`}
-              </Text>
-            </Flex>
+            ) : (
+              <>
+                {loading ? (
+                  <Flex height="40vh" align="center" justify="center">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="lg"
+                    />
+                  </Flex>
+                ) : (
+                  <Grid templateColumns="repeat(3, 1fr)" gap={6} p="20px 0px">
+                    {postStateValue.saved?.map((post) => (
+                      <Posts key={post.id} post={post} />
+                    ))}
+                  </Grid>
+                )}
+              </>
+            )}
           </TabPanel>
           <TabPanel>
             <Flex
@@ -292,10 +359,16 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                   m="8px"
                 />
               </Flex>
-              <Text fontWeight="light" fontSize="18pt" mt={3} mb={2}>
+              <Text
+                fontWeight="light"
+                fontSize="18pt"
+                mt={3}
+                mb={2}
+                textAlign="center"
+              >
                 Photos of you
               </Text>
-              <Text fontSize="11pt" color="black">
+              <Text fontSize="11pt" color="black" textAlign="center">
                 {`When people tag you in photos, they'll appear here.`}
               </Text>
             </Flex>
@@ -452,7 +525,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
         </TabList>
 
         <TabPanels>
-          <TabPanel p={0}>
+          <TabPanel p="0rem !important" m="0rem !important">
             {posts.length === 0 ? (
               <Flex
                 w="100%"
@@ -496,7 +569,11 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                 {!postsFetched ? (
                   <Spinner />
                 ) : (
-                  <Grid templateColumns="repeat(3, 1fr)" p="0px">
+                  <Grid
+                    templateColumns="repeat(3, 1fr)"
+                    p={{ base: "0px", md: "20px 0px" }}
+                    gap={{ base: 1, md: 6 }}
+                  >
                     {posts?.map((post) => (
                       <Posts key={post.id} post={post} />
                     ))}
@@ -505,29 +582,61 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
               </>
             )}
           </TabPanel>
-          <TabPanel>
-            <Flex
-              flexDir="column"
-              align="center"
-              justify="center"
-              margin="60px 44px"
-            >
-              <Flex border="1px solid" borderColor="black" borderRadius="full">
-                <Image
-                  src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
-                  alt=""
-                  h="50px"
-                  w="50px"
-                  m="8px"
-                />
+          <TabPanel p="0rem !important" m="0rem !important">
+            {postStateValue.saved.length === 0 ? (
+              <Flex
+                flexDir="column"
+                align="center"
+                justify="center"
+                margin="60px 44px"
+              >
+                <Flex
+                  border="1px solid"
+                  borderColor="black"
+                  borderRadius="full"
+                >
+                  <Image
+                    src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                    alt=""
+                    h="50px"
+                    w="50px"
+                    m="8px"
+                  />
+                </Flex>
+                <Text
+                  fontWeight="light"
+                  fontSize="15pt"
+                  mt={3}
+                  mb={2}
+                  textAlign="center"
+                >
+                  Saved photos and reels
+                </Text>
+                <Text fontSize="10pt" color="black" textAlign="center">
+                  {`When photos/reels that you saved, they'll appear here.`}
+                </Text>
               </Flex>
-              <Text fontWeight="light" fontSize="15pt" mt={3} mb={2}>
-                Saved photos and reels
-              </Text>
-              <Text fontSize="10pt" color="black" textAlign="center">
-                {`When photos/reels that you saved, they'll appear here.`}
-              </Text>
-            </Flex>
+            ) : (
+              <>
+                {loading ? (
+                  <Flex height="40vh" align="center" justify="center">
+                    <Spinner
+                      thickness="4px"
+                      speed="0.65s"
+                      emptyColor="gray.200"
+                      color="blue.500"
+                      size="lg"
+                    />
+                  </Flex>
+                ) : (
+                  <Grid templateColumns="repeat(3, 1fr)" gap={1} p="0px">
+                    {postStateValue.saved?.map((post) => (
+                      <Posts key={post.id} post={post} />
+                    ))}
+                  </Grid>
+                )}
+              </>
+            )}
           </TabPanel>
           <TabPanel>
             <Flex
@@ -545,7 +654,13 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
                   m="8px"
                 />
               </Flex>
-              <Text fontWeight="light" fontSize="15pt" mt={3} mb={2}>
+              <Text
+                fontWeight="light"
+                fontSize="15pt"
+                mt={3}
+                mb={2}
+                textAlign="center"
+              >
                 Photos of you
               </Text>
               <Text fontSize="10pt" color="black" textAlign="center">

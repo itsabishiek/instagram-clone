@@ -1,12 +1,64 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Flex, Grid, Spinner, Text } from "@chakra-ui/react";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { Post, postState } from "../../../atoms/postsAtom";
+import { userDataState } from "../../../atoms/userDataAtom";
+import Posts from "../../../components/post/Posts";
+import { auth, firestore } from "../../../firebase/clientApp";
 
-type SavedPageProps = {};
-
-const SavedPage: React.FC<SavedPageProps> = () => {
+const SavedPage: React.FC = () => {
+  const [user] = useAuthState(auth);
+  const [postStateValue, setPostStateValue] = useRecoilState(postState);
+  const userStateValue = useRecoilValue(userDataState);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const handleSavedPost = async () => {
+    setLoading(true);
+    try {
+      const savePostQuery = query(
+        collection(
+          firestore,
+          "users",
+          `${userStateValue.currUser.username}/saved`
+        ),
+        where("creator", "==", userStateValue.currUser.username)
+      );
+      const savedPosts = await getDocs(savePostQuery);
+      const saved = savedPosts.docs.map((doc) => doc.data());
+      setPostStateValue((prev) => ({
+        ...prev,
+        saved: saved as Post[],
+      }));
+    } catch (error) {
+      console.log("handleSavedPost Error", error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (user) {
+      handleSavedPost();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
+
+  if (loading)
+    return (
+      <Flex height="80vh" align="center" justify="center">
+        <Spinner
+          thickness="4px"
+          speed="0.65s"
+          emptyColor="gray.200"
+          color="blue.500"
+          size="lg"
+        />
+      </Flex>
+    );
 
   return (
     <>
@@ -19,9 +71,14 @@ const SavedPage: React.FC<SavedPageProps> = () => {
         />
       </Head>
 
-      <Flex p={{ base: "0px 0px 16px 0px ", md: "30px 0px" }} justify="center">
-        <Flex maxW="935px" w="100%">
-          <Flex align="center" cursor="pointer" onClick={() => router.back()}>
+      <Flex p={{ base: "0px", md: "30px 0px" }} justify="center">
+        <Flex maxW="935px" w="100%" flexDir="column">
+          <Flex
+            align="center"
+            cursor="pointer"
+            onClick={() => router.back()}
+            p={{ base: "20px 10px", md: "0px" }}
+          >
             <svg
               aria-label="Back"
               color="#8e8e8e"
@@ -34,10 +91,19 @@ const SavedPage: React.FC<SavedPageProps> = () => {
             >
               <path d="M21 17.502a.997.997 0 01-.707-.293L12 8.913l-8.293 8.296a1 1 0 11-1.414-1.414l9-9.004a1.03 1.03 0 011.414 0l9 9.004A1 1 0 0121 17.502z"></path>
             </svg>
-            <Text fontWeight={600} fontSize="11pt" color="#8e8e8e" ml={3}>
+            <Text fontWeight={600} fontSize="11pt" color="#8e8e8e" ml={2}>
               Saved
             </Text>
           </Flex>
+          <Grid
+            templateColumns="repeat(3, 1fr)"
+            p={{ base: "0px", md: "20px 0px" }}
+            gap={{ base: 1, md: 6 }}
+          >
+            {postStateValue.saved.map((post) => (
+              <Posts key={post.id} post={post} />
+            ))}
+          </Grid>
         </Flex>
       </Flex>
     </>
