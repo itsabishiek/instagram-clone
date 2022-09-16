@@ -18,10 +18,11 @@ const useFollow = () => {
   const [userStateValue, setUserStateValue] = useRecoilState(userDataState);
   const router = useRouter();
 
-  const onFollowOrUnfollowAccount = async (
-    userData: UserData,
-    isJoined: boolean
-  ) => {
+  const onFollowOrUnfollowAccount = async (userData: UserData) => {
+    const isJoined = !!userStateValue?.following.find(
+      (item) => item.username === userData.username
+    );
+
     if (!user) {
       router.push("/login");
       return;
@@ -63,10 +64,34 @@ const useFollow = () => {
       batch.update(usersDocRef, {
         following: increment(1),
       });
+
       const targetUserDocRef = doc(firestore, "users", userData.username);
+      const targetUserDocUpdate = doc(
+        firestore,
+        `users/${userData.username}/followers`,
+        userStateValue.currUser.username
+      );
+      const newFollower = {
+        id: targetUserDocUpdate.id,
+        username: userStateValue.currUser.username,
+        profileImg: userStateValue.currUser.imageURL || "",
+      };
+
+      batch.set(targetUserDocUpdate, newFollower);
       batch.update(targetUserDocRef, {
         followers: increment(1),
       });
+
+      if (targetUserDocUpdate.id === followingDocRef.id) {
+        batch.update(usersDocRef, {
+          followers: increment(1),
+        });
+
+        batch.set(targetUserDocUpdate, newFollower);
+        batch.update(targetUserDocRef, {
+          following: increment(1),
+        });
+      }
 
       await batch.commit();
 
@@ -109,10 +134,29 @@ const useFollow = () => {
       batch.update(usersDocRef, {
         following: increment(-1),
       });
+
       const targetUserDocRef = doc(firestore, "users", userData.username);
+      const targetUserDocUpdate = doc(
+        firestore,
+        `users/${userData.username}/followers`,
+        userStateValue.currUser.username
+      );
+
+      batch.delete(targetUserDocUpdate);
       batch.update(targetUserDocRef, {
         followers: increment(-1),
       });
+
+      if (targetUserDocUpdate.id !== followingDocRef.id) {
+        batch.update(usersDocRef, {
+          followers: increment(-1),
+        });
+
+        batch.delete(targetUserDocUpdate);
+        batch.update(targetUserDocRef, {
+          following: increment(-1),
+        });
+      }
 
       await batch.commit();
 
@@ -169,6 +213,7 @@ const useFollow = () => {
       }));
     }
     getFollowingAccount();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 

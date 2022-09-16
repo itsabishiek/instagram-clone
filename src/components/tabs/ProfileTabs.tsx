@@ -1,4 +1,5 @@
 import {
+  Center,
   Flex,
   Grid,
   Image,
@@ -12,6 +13,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -30,6 +32,7 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
   const [postStateValue, setPostStateValue] = useRecoilState(postState);
   const userStateValue = useRecoilValue(userDataState);
   const [loading, setLoading] = useState(false);
+  const { username } = useRouter().query;
 
   const handleSavedPost = async () => {
     setLoading(true);
@@ -159,31 +162,91 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
             mr={{ base: "0px", md: "40px" }}
             _selected={{ borderColor: "#262626" }}
           >
-            <svg
-              aria-label=""
-              color="#8e8e8e"
-              fill="#8e8e8e"
-              height="12"
-              role="img"
-              viewBox="0 0 24 24"
-              width="12"
-            >
-              <polygon
-                fill="none"
-                points="20 21 12 13.44 4 21 4 3 20 3 20 21"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              ></polygon>
-            </svg>
+            {username === userStateValue.currUser.username ? (
+              <svg
+                aria-label=""
+                color="#8e8e8e"
+                fill="#8e8e8e"
+                height="12"
+                role="img"
+                viewBox="0 0 24 24"
+                width="12"
+              >
+                <polygon
+                  fill="none"
+                  points="20 21 12 13.44 4 21 4 3 20 3 20 21"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></polygon>
+              </svg>
+            ) : (
+              <svg
+                aria-label=""
+                color="#262626"
+                fill="#262626"
+                height="12"
+                role="img"
+                viewBox="0 0 24 24"
+                width="12"
+              >
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="2.049"
+                  x2="21.95"
+                  y1="7.002"
+                  y2="7.002"
+                ></line>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="13.504"
+                  x2="16.362"
+                  y1="2.001"
+                  y2="7.002"
+                ></line>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="7.207"
+                  x2="10.002"
+                  y1="2.11"
+                  y2="7.002"
+                ></line>
+                <path
+                  d="M2 12.001v3.449c0 2.849.698 4.006 1.606 4.945.94.908 2.098 1.607 4.946 1.607h6.896c2.848 0 4.006-.699 4.946-1.607.908-.939 1.606-2.096 1.606-4.945V8.552c0-2.848-.698-4.006-1.606-4.945C19.454 2.699 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.546 2 5.704 2 8.552z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
+                <path
+                  d="M9.763 17.664a.908.908 0 01-.454-.787V11.63a.909.909 0 011.364-.788l4.545 2.624a.909.909 0 010 1.575l-4.545 2.624a.91.91 0 01-.91 0z"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
+            )}
+
             <Text
               fontSize="10pt"
               display={{ base: "none", md: "unset" }}
               ml={2}
               color="#262626"
             >
-              SAVED
+              {username === userStateValue.currUser.username
+                ? "SAVED"
+                : "REELS"}
             </Text>
           </Tab>
           <Tab _selected={{ borderColor: "#262626" }}>
@@ -287,62 +350,155 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
               </>
             )}
           </TabPanel>
-          <TabPanel p="0rem !important" m="0rem !important">
-            {postStateValue.saved.length === 0 ? (
+
+          {username === userStateValue.currUser.username ? (
+            <TabPanel p="0rem !important" m="0rem !important">
+              {postStateValue.saved.length === 0 ? (
+                <Flex
+                  flexDir="column"
+                  align="center"
+                  justify="center"
+                  margin="60px 44px"
+                >
+                  <Flex
+                    border="1px solid"
+                    borderColor="black"
+                    borderRadius="full"
+                  >
+                    <Image
+                      src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                      alt=""
+                      h="50px"
+                      w="50px"
+                      m="8px"
+                    />
+                  </Flex>
+                  <Text
+                    fontWeight="light"
+                    fontSize="18pt"
+                    mt={3}
+                    mb={2}
+                    textAlign="center"
+                  >
+                    Saved photos and reels
+                  </Text>
+                  <Text fontSize="11pt" color="black" textAlign="center">
+                    {`When photos/reels that you saved, they'll appear here.`}
+                  </Text>
+                </Flex>
+              ) : (
+                <>
+                  {loading ? (
+                    <Flex height="40vh" align="center" justify="center">
+                      <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="blue.500"
+                        size="lg"
+                      />
+                    </Flex>
+                  ) : (
+                    <Grid templateColumns="repeat(3, 1fr)" gap={6} p="20px 0px">
+                      {postStateValue.saved?.map((post) => (
+                        <Posts key={post.id} post={post} />
+                      ))}
+                    </Grid>
+                  )}
+                </>
+              )}
+            </TabPanel>
+          ) : (
+            <TabPanel p="0rem !important" m="0rem !important">
               <Flex
                 flexDir="column"
                 align="center"
                 justify="center"
                 margin="60px 44px"
               >
-                <Flex
+                <Center
                   border="1px solid"
                   borderColor="black"
                   borderRadius="full"
+                  h="65px"
+                  w="65px"
                 >
-                  <Image
-                    src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
-                    alt=""
-                    h="50px"
-                    w="50px"
-                    m="8px"
-                  />
-                </Flex>
+                  <svg
+                    aria-label=""
+                    color="#262626"
+                    fill="#262626"
+                    height="40"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="40"
+                  >
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="2.049"
+                      x2="21.95"
+                      y1="7.002"
+                      y2="7.002"
+                    ></line>
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="13.504"
+                      x2="16.362"
+                      y1="2.001"
+                      y2="7.002"
+                    ></line>
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="7.207"
+                      x2="10.002"
+                      y1="2.11"
+                      y2="7.002"
+                    ></line>
+                    <path
+                      d="M2 12.001v3.449c0 2.849.698 4.006 1.606 4.945.94.908 2.098 1.607 4.946 1.607h6.896c2.848 0 4.006-.699 4.946-1.607.908-.939 1.606-2.096 1.606-4.945V8.552c0-2.848-.698-4.006-1.606-4.945C19.454 2.699 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.546 2 5.704 2 8.552z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    ></path>
+                    <path
+                      d="M9.763 17.664a.908.908 0 01-.454-.787V11.63a.909.909 0 011.364-.788l4.545 2.624a.909.909 0 010 1.575l-4.545 2.624a.91.91 0 01-.91 0z"
+                      fillRule="evenodd"
+                    ></path>
+                  </svg>
+                </Center>
                 <Text
-                  fontWeight="light"
-                  fontSize="18pt"
+                  fontWeight={500}
+                  fontSize="15pt"
                   mt={3}
                   mb={2}
                   textAlign="center"
                 >
-                  Saved photos and reels
+                  Get the app to share your first photo or video.
                 </Text>
-                <Text fontSize="11pt" color="black" textAlign="center">
-                  {`When photos/reels that you saved, they'll appear here.`}
+                <Text
+                  fontWeight="light"
+                  fontSize="12pt"
+                  mt={1}
+                  textAlign="center"
+                >
+                  Start capturing and sharing your moments.
                 </Text>
               </Flex>
-            ) : (
-              <>
-                {loading ? (
-                  <Flex height="40vh" align="center" justify="center">
-                    <Spinner
-                      thickness="4px"
-                      speed="0.65s"
-                      emptyColor="gray.200"
-                      color="blue.500"
-                      size="lg"
-                    />
-                  </Flex>
-                ) : (
-                  <Grid templateColumns="repeat(3, 1fr)" gap={6} p="20px 0px">
-                    {postStateValue.saved?.map((post) => (
-                      <Posts key={post.id} post={post} />
-                    ))}
-                  </Grid>
-                )}
-              </>
-            )}
-          </TabPanel>
+            </TabPanel>
+          )}
+
           <TabPanel>
             <Flex
               flexDir="column"
@@ -457,24 +613,81 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
             mr={{ base: "0px", md: "40px" }}
             _selected={{ borderColor: "#262626" }}
           >
-            <svg
-              aria-label="Saved"
-              color="#8e8e8e"
-              fill="#8e8e8e"
-              height="24"
-              role="img"
-              viewBox="0 0 24 24"
-              width="24"
-            >
-              <polygon
-                fill="none"
-                points="20 21 12 13.44 4 21 4 3 20 3 20 21"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-              ></polygon>
-            </svg>
+            {username === userStateValue.currUser.username ? (
+              <svg
+                aria-label="Saved"
+                color="#8e8e8e"
+                fill="#8e8e8e"
+                height="24"
+                role="img"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <polygon
+                  fill="none"
+                  points="20 21 12 13.44 4 21 4 3 20 3 20 21"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></polygon>
+              </svg>
+            ) : (
+              <svg
+                aria-label="Reels"
+                color="#8e8e8e"
+                fill="#8e8e8e"
+                height="24"
+                role="img"
+                viewBox="0 0 24 24"
+                width="24"
+              >
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="2.049"
+                  x2="21.95"
+                  y1="7.002"
+                  y2="7.002"
+                ></line>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="13.504"
+                  x2="16.362"
+                  y1="2.001"
+                  y2="7.002"
+                ></line>
+                <line
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  x1="7.207"
+                  x2="10.002"
+                  y1="2.11"
+                  y2="7.002"
+                ></line>
+                <path
+                  d="M2 12.001v3.449c0 2.849.698 4.006 1.606 4.945.94.908 2.098 1.607 4.946 1.607h6.896c2.848 0 4.006-.699 4.946-1.607.908-.939 1.606-2.096 1.606-4.945V8.552c0-2.848-.698-4.006-1.606-4.945C19.454 2.699 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.546 2 5.704 2 8.552z"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                ></path>
+                <path
+                  d="M9.763 17.664a.908.908 0 01-.454-.787V11.63a.909.909 0 011.364-.788l4.545 2.624a.909.909 0 010 1.575l-4.545 2.624a.91.91 0 01-.91 0z"
+                  fillRule="evenodd"
+                ></path>
+              </svg>
+            )}
           </Tab>
           <Tab _selected={{ borderColor: "#262626" }}>
             <svg
@@ -582,62 +795,154 @@ const ProfileTabs: React.FC<ProfileTabsProps> = ({ posts, postsFetched }) => {
               </>
             )}
           </TabPanel>
-          <TabPanel p="0rem !important" m="0rem !important">
-            {postStateValue.saved.length === 0 ? (
+
+          {username === userStateValue.currUser.username ? (
+            <TabPanel p="0rem !important" m="0rem !important">
+              {postStateValue.saved.length === 0 ? (
+                <Flex
+                  flexDir="column"
+                  align="center"
+                  justify="center"
+                  margin="60px 44px"
+                >
+                  <Flex
+                    border="1px solid"
+                    borderColor="black"
+                    borderRadius="full"
+                  >
+                    <Image
+                      src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
+                      alt=""
+                      h="50px"
+                      w="50px"
+                      m="8px"
+                    />
+                  </Flex>
+                  <Text
+                    fontWeight="light"
+                    fontSize="15pt"
+                    mt={3}
+                    mb={2}
+                    textAlign="center"
+                  >
+                    Saved photos and reels
+                  </Text>
+                  <Text fontSize="10pt" color="black" textAlign="center">
+                    {`When photos/reels that you saved, they'll appear here.`}
+                  </Text>
+                </Flex>
+              ) : (
+                <>
+                  {loading ? (
+                    <Flex height="40vh" align="center" justify="center">
+                      <Spinner
+                        thickness="4px"
+                        speed="0.65s"
+                        emptyColor="gray.200"
+                        color="blue.500"
+                        size="lg"
+                      />
+                    </Flex>
+                  ) : (
+                    <Grid templateColumns="repeat(3, 1fr)" gap={1} p="0px">
+                      {postStateValue.saved?.map((post) => (
+                        <Posts key={post.id} post={post} />
+                      ))}
+                    </Grid>
+                  )}
+                </>
+              )}
+            </TabPanel>
+          ) : (
+            <TabPanel p="0rem !important" m="0rem !important">
               <Flex
                 flexDir="column"
                 align="center"
                 justify="center"
                 margin="60px 44px"
               >
-                <Flex
+                <Center
                   border="1px solid"
                   borderColor="black"
                   borderRadius="full"
+                  h="65px"
+                  w="65px"
                 >
-                  <Image
-                    src="https://cdn.icon-icons.com/icons2/3138/PNG/512/bookmark_save_storage_basic_icon_192482.png"
-                    alt=""
-                    h="50px"
-                    w="50px"
-                    m="8px"
-                  />
-                </Flex>
+                  <svg
+                    aria-label=""
+                    color="#262626"
+                    fill="#262626"
+                    height="40"
+                    role="img"
+                    viewBox="0 0 24 24"
+                    width="40"
+                  >
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="2.049"
+                      x2="21.95"
+                      y1="7.002"
+                      y2="7.002"
+                    ></line>
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="13.504"
+                      x2="16.362"
+                      y1="2.001"
+                      y2="7.002"
+                    ></line>
+                    <line
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      x1="7.207"
+                      x2="10.002"
+                      y1="2.11"
+                      y2="7.002"
+                    ></line>
+                    <path
+                      d="M2 12.001v3.449c0 2.849.698 4.006 1.606 4.945.94.908 2.098 1.607 4.946 1.607h6.896c2.848 0 4.006-.699 4.946-1.607.908-.939 1.606-2.096 1.606-4.945V8.552c0-2.848-.698-4.006-1.606-4.945C19.454 2.699 18.296 2 15.448 2H8.552c-2.848 0-4.006.699-4.946 1.607C2.698 4.546 2 5.704 2 8.552z"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                    ></path>
+                    <path
+                      d="M9.763 17.664a.908.908 0 01-.454-.787V11.63a.909.909 0 011.364-.788l4.545 2.624a.909.909 0 010 1.575l-4.545 2.624a.91.91 0 01-.91 0z"
+                      fillRule="evenodd"
+                    ></path>
+                  </svg>
+                </Center>
                 <Text
-                  fontWeight="light"
-                  fontSize="15pt"
+                  fontWeight={500}
+                  fontSize="14pt"
                   mt={3}
                   mb={2}
                   textAlign="center"
                 >
-                  Saved photos and reels
+                  Get the app to share your first photo or video.
                 </Text>
-                <Text fontSize="10pt" color="black" textAlign="center">
-                  {`When photos/reels that you saved, they'll appear here.`}
+                <Text
+                  fontWeight="light"
+                  fontSize="12pt"
+                  mt={1}
+                  textAlign="center"
+                >
+                  Start capturing and sharing your moments.
                 </Text>
               </Flex>
-            ) : (
-              <>
-                {loading ? (
-                  <Flex height="40vh" align="center" justify="center">
-                    <Spinner
-                      thickness="4px"
-                      speed="0.65s"
-                      emptyColor="gray.200"
-                      color="blue.500"
-                      size="lg"
-                    />
-                  </Flex>
-                ) : (
-                  <Grid templateColumns="repeat(3, 1fr)" gap={1} p="0px">
-                    {postStateValue.saved?.map((post) => (
-                      <Posts key={post.id} post={post} />
-                    ))}
-                  </Grid>
-                )}
-              </>
-            )}
-          </TabPanel>
+            </TabPanel>
+          )}
           <TabPanel>
             <Flex
               flexDir="column"

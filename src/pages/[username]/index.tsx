@@ -20,7 +20,6 @@ import {
 import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import safeJsonStringify from "safe-json-stringify";
@@ -44,28 +43,6 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     onFollowOrUnfollowAccount,
     loadingFollow,
   } = useFollow();
-  const { username } = useRouter().query;
-
-  const getFollowingData = async () => {
-    try {
-      const followingDocs = await getDocs(
-        collection(
-          firestore,
-          "users",
-          `${userStateValue.currUser.username}/following`
-        )
-      );
-      const following = followingDocs.docs.map((doc) => doc.data());
-      console.log(following);
-    } catch (error) {
-      console.log("getFollowingData Error", error);
-    }
-  };
-
-  useEffect(() => {
-    if (username) getFollowingData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]);
 
   const getUserPosts = async () => {
     setLoading(true);
@@ -133,7 +110,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
     (item) => item.username === userData.username
   );
 
-  // console.log(userData);
+  console.log(isJoined);
 
   return (
     <>
@@ -240,7 +217,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   w="150px"
                   variant={isJoined ? "outline" : "solid"}
                   isLoading={loadingFollow}
-                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
+                  onClick={() => onFollowOrUnfollowAccount(userData)}
                 >
                   {isJoined ? "Following" : "Follow"}
                 </Button>
@@ -283,7 +260,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ userData }) => {
                   mr={2}
                   variant={isJoined ? "outline" : "solid"}
                   isLoading={loadingFollow}
-                  onClick={() => onFollowOrUnfollowAccount(userData, isJoined)}
+                  onClick={() => onFollowOrUnfollowAccount(userData)}
                 >
                   {isJoined ? "Following" : "Follow"}
                 </Button>
