@@ -30,7 +30,7 @@ const Icons: React.FC = () => {
         </svg>
       </Link>
 
-      <Link href="/">
+      <Link href="/direct/inbox">
         <Box position="relative">
           <svg
             aria-label="Messenger"
