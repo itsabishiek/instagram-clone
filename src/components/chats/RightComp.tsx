@@ -1,5 +1,6 @@
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
 import pic from "../../../public/img/mediaUpsell.jpg";
 import ChatInput from "./ChatInput";
@@ -8,6 +9,7 @@ import Messages from "./Messages";
 type RightCompProps = {};
 
 const RightComp: React.FC<RightCompProps> = () => {
+  const router = useRouter();
   return (
     <Flex position="relative" flexDir="column">
       <Flex
@@ -21,7 +23,7 @@ const RightComp: React.FC<RightCompProps> = () => {
         borderBottom="1px solid"
         borderColor="gray.100"
       >
-        <Box display={{ base: "flex", md: "none" }}>
+        <Link href="/direct/inbox" display={{ base: "flex", md: "none" }}>
           <svg
             aria-label="Down chevron icon"
             color="#262626"
@@ -34,7 +36,7 @@ const RightComp: React.FC<RightCompProps> = () => {
           >
             <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
           </svg>
-        </Box>
+        </Link>
         <Flex align="center">
           <Image
             src={pic}

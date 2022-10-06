@@ -50,7 +50,11 @@ const Messenger: React.FC<MessengerProps> = () => {
             <LeftComp user={userStateValue.currUser} />
           </Flex>
 
-          <Flex flex={4} flexDir="column" h={{ base: "100vh", md: "85vh" }}>
+          <Flex
+            flex={{ base: 4, md: 1 }}
+            flexDir="column"
+            h={{ base: "100vh", md: "85vh" }}
+          >
             <RightComp />
           </Flex>
         </Flex>

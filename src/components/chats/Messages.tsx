@@ -8,7 +8,7 @@ const Messages: React.FC<MessagesProps> = () => {
   return (
     <Box
       p="20px 20px 0"
-      h={{ base: "calc(100vh - 126px)", md: "calc(85vh - 142px)" }}
+      h={{ base: "calc(100vh - 190px)", md: "calc(85vh - 144px)" }}
       overflowY="scroll"
       display="flex"
       flexDir="column"

@@ -5,7 +5,13 @@ type ChatInputProps = {};
 
 const ChatInput: React.FC<ChatInputProps> = () => {
   return (
-    <Box p="20px" bg="white">
+    <Box
+      p="20px"
+      bg="white"
+      pos={{ base: "sticky", md: "unset" }}
+      bottom={{ base: 0, md: "unset" }}
+      w="100%"
+    >
       <Flex
         position="sticky"
         bottom={0}

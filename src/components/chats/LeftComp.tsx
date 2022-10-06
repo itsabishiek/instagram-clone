@@ -1,4 +1,5 @@
 import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import React from "react";
 import { UserData } from "../../atoms/userDataAtom";
 
@@ -7,6 +8,7 @@ type LeftCompProps = {
 };
 
 const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
+  const router = useRouter();
   return (
     <Flex w="100%" flexDir="column">
       <Flex
@@ -45,6 +47,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
             height="16"
             width="16"
             style={{ transform: "rotate(180deg)", marginLeft: 5 }}
+            onClick={() => router.back()}
           >
             <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
           </svg>
