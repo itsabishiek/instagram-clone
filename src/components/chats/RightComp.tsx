@@ -1,6 +1,5 @@
 import { Box, Flex, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import React from "react";
 import pic from "../../../public/img/mediaUpsell.jpg";
 import ChatInput from "./ChatInput";
@@ -9,9 +8,12 @@ import Messages from "./Messages";
 type RightCompProps = {};
 
 const RightComp: React.FC<RightCompProps> = () => {
-  const router = useRouter();
   return (
-    <Flex position="relative" flexDir="column">
+    <Flex
+      position="relative"
+      flexDir="column"
+      minH={{ base: "100vh", md: "85vh" }}
+    >
       <Flex
         position="sticky"
         top={0}

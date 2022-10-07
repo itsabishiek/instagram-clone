@@ -30,6 +30,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
             height="20"
             width="20"
             className="rotateIcon"
+            onClick={() => router.back()}
           >
             <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
           </svg>
@@ -47,7 +48,6 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
             height="16"
             width="16"
             style={{ transform: "rotate(180deg)", marginLeft: 5 }}
-            onClick={() => router.back()}
           >
             <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
           </svg>
@@ -97,7 +97,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
 
         <Flex flexDir="column" justify="center">
           <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="14px" color="#8e8e8e" fontWeight="light">
+          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
             Active now
           </Text>
         </Flex>
@@ -108,7 +108,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
 
         <Flex flexDir="column" justify="center">
           <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="14px" color="#8e8e8e" fontWeight="light">
+          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
             Active now
           </Text>
         </Flex>
@@ -119,7 +119,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
 
         <Flex flexDir="column" justify="center">
           <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="14px" color="#8e8e8e" fontWeight="light">
+          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
             Active now
           </Text>
         </Flex>

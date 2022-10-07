@@ -27,7 +27,7 @@ const Messenger: React.FC<MessengerProps> = () => {
         w="100%"
         justify="center"
         align={{ base: "left", md: "center" }}
-        h="calc(100vh - 60px)"
+        h={{ base: "calc(100vh)", md: "calc(100vh - 60px)" }}
         top={{ base: 0, md: "unset" }}
         zIndex={{ base: "10007", md: "unset" }}
       >
@@ -36,7 +36,7 @@ const Messenger: React.FC<MessengerProps> = () => {
           bg="white"
           maxW="935px"
           w="100%"
-          h={{ base: "calc(100vh - 44px - 49px)", md: "85vh" }}
+          h={{ base: "100vh", md: "85vh" }}
           border="1px solid"
           borderColor="gray.200"
           borderRadius={{ base: 0, md: 4 }}
@@ -50,11 +50,7 @@ const Messenger: React.FC<MessengerProps> = () => {
             <LeftComp user={userStateValue.currUser} />
           </Flex>
 
-          <Flex
-            flex={{ base: 4, md: 1 }}
-            flexDir="column"
-            h={{ base: "100vh", md: "85vh" }}
-          >
+          <Flex flex={{ base: 1, md: 4 }} flexDir="column">
             <RightComp />
           </Flex>
         </Flex>
