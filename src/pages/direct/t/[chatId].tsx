@@ -1,6 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import Head from "next/head";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import { userDataState } from "../../../atoms/userDataAtom";
 import LeftComp from "../../../components/chats/LeftComp";
@@ -58,4 +59,5 @@ const Messenger: React.FC<MessengerProps> = () => {
     </>
   );
 };
+
 export default Messenger;

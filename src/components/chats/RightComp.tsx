@@ -1,13 +1,19 @@
-import { Box, Flex, Link, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Link, Text } from "@chakra-ui/react";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import React from "react";
+import { useRecoilValue } from "recoil";
 import pic from "../../../public/img/mediaUpsell.jpg";
+import { chatsAtom } from "../../atoms/chatsAtom";
 import ChatInput from "./ChatInput";
 import Messages from "./Messages";
 
 type RightCompProps = {};
 
 const RightComp: React.FC<RightCompProps> = () => {
+  const router = useRouter();
+  const chatStateValue = useRecoilValue(chatsAtom);
+
   return (
     <Flex
       position="relative"
@@ -25,30 +31,27 @@ const RightComp: React.FC<RightCompProps> = () => {
         borderBottom="1px solid"
         borderColor="gray.100"
       >
-        <Link href="/direct/inbox" display={{ base: "flex", md: "none" }}>
-          <svg
-            aria-label="Down chevron icon"
-            color="#262626"
-            fill="#262626"
-            role="img"
-            viewBox="0 0 24 24"
-            height="20"
-            width="20"
-            className="rotateIcon"
-          >
-            <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
-          </svg>
-        </Link>
+        <svg
+          aria-label="Down chevron icon"
+          color="#262626"
+          fill="#262626"
+          role="img"
+          viewBox="0 0 24 24"
+          height="20"
+          width="20"
+          className="rotateIcon"
+          onClick={() => router.back()}
+        >
+          <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
+        </svg>
         <Flex align="center">
-          <Image
-            src={pic}
-            alt=""
-            width="26px"
-            height="26px"
-            style={{ borderRadius: "50%", objectFit: "cover" }}
+          <Avatar
+            src={chatStateValue.chatUserInfo?.photoURL}
+            boxSize="26px"
+            objectFit="cover"
           />
           <Text fontWeight={600} color="black" fontSize="16px" ml={3}>
-            {"⚡𝙏 𝙃 𝙄 𝙍 𝙐🧧"}
+            {chatStateValue.chatUserInfo?.displayName}
           </Text>
         </Flex>
 

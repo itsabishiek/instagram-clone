@@ -65,6 +65,12 @@ const SignupPage = () => {
         following: 0,
         createdAt: serverTimestamp(),
       });
+
+      await setDoc(
+        doc(firestore, `users/${signupForm.username}`, `userChats/${user.uid}`),
+        {}
+      );
+
       router.push("/");
     } catch (error) {
       console.log("createUserDocument Error", error);

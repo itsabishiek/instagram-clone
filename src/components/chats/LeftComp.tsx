@@ -1,14 +1,63 @@
-import { Avatar, Box, Flex, Image, Text } from "@chakra-ui/react";
+import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import { DocumentData, onSnapshot, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
-import React from "react";
-import { UserData } from "../../atoms/userDataAtom";
+import React, { useEffect, useState } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { chatsAtom, ChatUserInfo } from "../../atoms/chatsAtom";
+import { UserData, userDataState } from "../../atoms/userDataAtom";
+import { firestore } from "../../firebase/clientApp";
 
 type LeftCompProps = {
   user: UserData;
 };
 
 const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
+  const [chats, setChats] = useState<DocumentData>([]);
+  const [chatStateValue, setChatStateValue] = useRecoilState(chatsAtom);
+  const userStateValue = useRecoilValue(userDataState);
   const router = useRouter();
+
+  useEffect(() => {
+    const getChats = () => {
+      const unsubscribe = onSnapshot(
+        doc(
+          firestore,
+          `users/${userStateValue.currUser.username}`,
+          `userChats/${userStateValue.currUser.uid}`
+        ),
+        (snapshot) => {
+          if (snapshot.exists()) {
+            setChats(snapshot?.data());
+          }
+        }
+      );
+
+      return () => {
+        unsubscribe();
+      };
+    };
+
+    userStateValue.currUser.username && getChats();
+  }, [userStateValue.currUser.username, userStateValue.currUser.uid]);
+
+  const handleSelectChat = (combinedId: string, userInfo: object) => {
+    setChatStateValue((prev) => ({
+      ...prev,
+      combinedId: combinedId,
+      chatUserInfo: userInfo as ChatUserInfo,
+    }));
+    router.push(`/direct/t/${combinedId}`);
+  };
+
+  useEffect(() => {
+    if (Object.keys(chatStateValue.chatUserInfo).length === 0) {
+      router.push("/direct/inbox");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // console.log(Object.entries(chats));
+
   return (
     <Flex w="100%" flexDir="column">
       <Flex
@@ -35,6 +84,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
             <path d="M21 17.502a.997.997 0 0 1-.707-.293L12 8.913l-8.293 8.296a1 1 0 1 1-1.414-1.414l9-9.004a1.03 1.03 0 0 1 1.414 0l9 9.004A1 1 0 0 1 21 17.502Z"></path>
           </svg>
         </Box>
+
         <Flex align="center">
           <Text fontWeight={600} color="black" fontSize="16px">
             {user.username}
@@ -92,38 +142,26 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
         </svg>
       </Flex>
 
-      <Flex p="8px 20px" cursor="pointer" _hover={{ bg: "#eeeeee76" }}>
-        <Avatar src={user.imageURL} boxSize="56px" mr={3} />
+      {Object.entries(chats)
+        ?.sort((a, b) => b[1].createdAt - a[1].createdAt)
+        ?.map((chat) => (
+          <Flex
+            p="8px 20px"
+            cursor="pointer"
+            _hover={{ bg: "#eeeeee76" }}
+            key={chat[0]}
+            onClick={() => handleSelectChat(chat[0], chat[1].userInfo)}
+          >
+            <Avatar src={chat[1].userInfo?.photoURL} boxSize="56px" mr={3} />
 
-        <Flex flexDir="column" justify="center">
-          <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
-            Active now
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Flex p="8px 20px" cursor="pointer" _hover={{ bg: "#eeeeee76" }}>
-        <Avatar src={user.imageURL} boxSize="56px" mr={3} />
-
-        <Flex flexDir="column" justify="center">
-          <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
-            Active now
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Flex p="8px 20px" cursor="pointer" _hover={{ bg: "#eeeeee76" }}>
-        <Avatar src={user.imageURL} boxSize="56px" mr={3} />
-
-        <Flex flexDir="column" justify="center">
-          <Text fontSize="14px">{user.fullname}</Text>
-          <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
-            Active now
-          </Text>
-        </Flex>
-      </Flex>
+            <Flex flexDir="column" justify="center">
+              <Text fontSize="14px">{chat[1].userInfo?.displayName}</Text>
+              <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
+                {chat[1].lastMessage?.text.slice(0, 26)}...
+              </Text>
+            </Flex>
+          </Flex>
+        ))}
     </Flex>
   );
 };
