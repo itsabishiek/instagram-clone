@@ -1,6 +1,6 @@
-import { Flex, Image, Text } from "@chakra-ui/react";
+import { Flex, Image, Skeleton, Text } from "@chakra-ui/react";
 import { Timestamp } from "firebase/firestore";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useRecoilValue } from "recoil";
 import { chatsAtom } from "../../atoms/chatsAtom";
 import { userDataState } from "../../atoms/userDataAtom";
@@ -20,6 +20,7 @@ type MessageProps = {
 const Message: React.FC<MessageProps> = ({ message }) => {
   const userStateValue = useRecoilValue(userDataState);
   const chatStateValue = useRecoilValue(chatsAtom);
+  const [loadingImage, setLoadingImage] = useState(true);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -81,14 +82,26 @@ const Message: React.FC<MessageProps> = ({ message }) => {
           </Text>
         )}
         {message?.image && (
-          <Image
-            src={message.image}
-            width="100%"
-            height="100%"
-            borderRadius="15px"
-            objectFit="contain"
-            alt=""
-          />
+          <>
+            {loadingImage && (
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                height="200px"
+                borderRadius="10px"
+              />
+            )}
+            <Image
+              src={message.image}
+              width="100%"
+              height="100%"
+              borderRadius="15px"
+              objectFit="contain"
+              alt=""
+              onLoad={() => setLoadingImage(false)}
+              display={loadingImage ? "none" : "unset"}
+            />
+          </>
         )}
       </Flex>
     </Flex>

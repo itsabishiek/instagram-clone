@@ -1,4 +1,12 @@
-import { Avatar, Box, Flex, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Box,
+  Flex,
+  Skeleton,
+  SkeletonCircle,
+  SkeletonText,
+  Text,
+} from "@chakra-ui/react";
 import { DocumentData, onSnapshot, doc } from "firebase/firestore";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
@@ -15,6 +23,7 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
   const [chats, setChats] = useState<DocumentData>([]);
   const [chatStateValue, setChatStateValue] = useRecoilState(chatsAtom);
   const userStateValue = useRecoilValue(userDataState);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
@@ -86,9 +95,13 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
         </Box>
 
         <Flex align="center">
-          <Text fontWeight={600} color="black" fontSize="16px">
-            {user.username}
-          </Text>
+          {loading ? (
+            <Skeleton w="140px" h="20px" borderRadius="5px" />
+          ) : (
+            <Text fontWeight={600} color="black" fontSize="16px">
+              {user.username}
+            </Text>
+          )}
           <svg
             aria-label="Down chevron icon"
             color="#262626"
@@ -145,22 +158,32 @@ const LeftComp: React.FC<LeftCompProps> = ({ user }) => {
       {Object.entries(chats)
         ?.sort((a, b) => b[1].createdAt - a[1].createdAt)
         ?.map((chat) => (
-          <Flex
-            p="8px 20px"
-            cursor="pointer"
-            _hover={{ bg: "#eeeeee76" }}
-            key={chat[0]}
-            onClick={() => handleSelectChat(chat[0], chat[1].userInfo)}
-          >
-            <Avatar src={chat[1].userInfo?.photoURL} boxSize="56px" mr={3} />
+          <>
+            {loading && (
+              <Flex p="8px 20px" align="center">
+                <SkeletonCircle boxSize="56px" mr={3} />
+                <SkeletonText noOfLines={2} w="150px" />
+              </Flex>
+            )}
+            <Flex
+              p="8px 20px"
+              cursor="pointer"
+              _hover={{ bg: "#eeeeee76" }}
+              key={chat[0]}
+              onClick={() => handleSelectChat(chat[0], chat[1].userInfo)}
+              onLoad={() => setLoading(false)}
+              display={loading ? "none" : "flex"}
+            >
+              <Avatar src={chat[1].userInfo?.photoURL} boxSize="56px" mr={3} />
 
-            <Flex flexDir="column" justify="center">
-              <Text fontSize="14px">{chat[1].userInfo?.displayName}</Text>
-              <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
-                {chat[1].lastMessage?.text.slice(0, 26)}...
-              </Text>
+              <Flex flexDir="column" justify="center">
+                <Text fontSize="14px">{chat[1].userInfo?.displayName}</Text>
+                <Text fontSize="13px" color="#8e8e8e" fontWeight="light">
+                  {chat[1].lastMessage?.text.slice(0, 26)}...
+                </Text>
+              </Flex>
             </Flex>
-          </Flex>
+          </>
         ))}
     </Flex>
   );

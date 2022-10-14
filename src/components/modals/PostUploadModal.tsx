@@ -421,8 +421,14 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                       borderColor="gray.200"
                       w="100%"
                       flex="0 0 60%"
+                      bg={{ base: "gray.200", md: "unset" }}
                     >
-                      <Image src={selectedFile} alt="" maxH="60vh" />
+                      <Image
+                        src={selectedFile}
+                        alt=""
+                        maxH={{ base: "35vh", md: "60vh" }}
+                        h="100%"
+                      />
                     </Flex>
 
                     <Flex flexDir="column" w="100%" flex="0 0 40%">
@@ -437,7 +443,7 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                         focusBorderColor="none"
                         _placeholder={{ color: "grey" }}
                         fontSize={{ base: "10pt", md: "11.5pt" }}
-                        h="150px"
+                        h={{ base: "120px", md: "150px" }}
                         resize="none"
                         value={caption}
                         onChange={(e) => setCaption(e.target.value)}
@@ -475,10 +481,9 @@ const PostUploadModal: React.FC<PostUploadModalProps> = ({ children }) => {
                       <Flex
                         align="center"
                         justify="space-between"
-                        borderBottom="1px solid"
+                        borderBottom={{ base: "none", md: "1px solid" }}
                         borderColor="gray.200"
                         pr="12px"
-                        display={{ base: "none", md: "flex" }}
                       >
                         <Input
                           focusBorderColor="none"
